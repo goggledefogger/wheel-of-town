@@ -1,87 +1,78 @@
-# 🎪 Wheel Of Town
+# 🎪 Wheel of Town
 
-*The game show where everyone knows your name... because you're playing alone against AI.*
+*"Welcome to Wheel of Town! Pat Roy and Vanna Roy got the puzzles, the prizes, and the occasional bankruptcy. Let’s spin!*
 
-A browser-based spin on the classic word puzzle game, built with React and three.js. One human, two AI opponents, infinite regret over not buying that vowel.
+---
 
-## 🎮 What's This?
+A browser-based word puzzle game where you face off against two opponents. Built with React and three.js, featuring a 3D wheel, letter board, and just enough chaos to keep things interesting.
 
-Think game show meets small-town charm. Spin a 3D wheel, guess letters, solve puzzles, and try not to go bankrupt while Pat makes commentary and Vanna reveals letters like it's 1983.
+## 🎮 What’s the Deal?
 
-**Features:**
-- 3D spinning wheel with realistic physics (or at least realistic enough)
-- Two AI opponents with distinct personalities: one cautious, one reckless
-- Pat hosts, Vanna reveals, you stress about consonants
-- Keyboard and mouse controls because this isn't the stone age
-- Accessibility features for everyone to enjoy the wheel-spinning madness
+Spin the wheel, guess letters, buy vowels, and solve the puzzle before an opponent beats you to it.
+The wheel might be kind, it might be cruel.
+
+**Highlights:**
+• 3D spinning wheel with satisfying physics
+• Two AI opponents with distinct strategies
+• Hosted by Pat and Vanna Roy
+• Playable with keyboard or mouse
+• Accessibility features so everyone gets a fair shot
 
 ## 🚀 Quick Start
 
 ```bash
-# Clone the town
 git clone <your-repo-url>
 cd wheel-of-town
-
-# Install the dependencies (they're friendly, we promise)
 npm install
-
-# Spin up the dev server
 npm run dev
-
-# Visit localhost:5173 and start your linguistic journey
 ```
+
+Then open `localhost:5173` in your browser and start spinning.
 
 ## 🎯 How to Play
 
-1. **Spin** the wheel (or click the button if you're feeling lucky)
-2. **Guess** consonants for cash, buy vowels for $250
-3. **Solve** the puzzle when you think you know it
-4. **Repeat** until someone wins or everyone goes bankrupt
+1. Spin the wheel
+2. Guess consonants to earn cash
+3. Buy vowels for \$250
+4. Solve the puzzle to win the round
+5. Try not to go bankrupt before the opponents do
 
-The AI players have their own strategies, so don't expect them to make the same questionable decisions you do.
+The cautious AI plays it safe. The aggressive AI doesn’t.
 
-## 🏗️ Built With
+## 🏗️ Tech Behind the Town
 
-- **React 18** - Because functional components are functional
-- **three.js** - For that sweet, sweet 3D wheel action
-- **Zustand** - State management that doesn't make you cry
-- **Vite** - Fast builds, faster spins
-- **Howler.js** - Sound effects (coming soon™)
+React 18
+three.js
+Zustand
+Vite
+Howler.js – Sound effects (coming soon)
 
 ## 🎪 The Town Roster
 
-- **Pat** - Your friendly host with dad jokes and infinite patience
-- **Vanna** - Letter-revealing legend with a wave that could stop traffic
-- **AI Cautious** - Plays it safe, probably uses turn signals in parking lots
-- **AI Aggressive** - Lives dangerously, probably eats cereal without milk
+**Pat Roy** – Loves a good pun, keeps the game moving, probably owns too many blazers
+**Vanna Roy** – Effortlessly reveals letters and has never missed a cue
+**AI Cautious** – Patient, careful, and annoyingly consistent
+**AI Aggressive** – Swings for the fences every time
 
 ## 🧪 Testing
 
 ```bash
-# Run the full test suite
 npm run test:e2e
-
-# Test specific features
 npx playwright test tests/spin-and-zoom.spec.js
 ```
 
-Because nothing says "professional" like making sure your wheel actually spins.
-
 ## 📝 Development Status
 
-Currently in MVP phase with all core gameplay implemented. Check `TASKS.md` for what's cooking and `PRD.md` for the master plan.
+MVP complete. Core gameplay works.
+See `TASKS.md` for upcoming features and `PRD.md` for the full plan.
 
-**Working:** Spinning, guessing, solving, AI opponents, basic accessibility
-**Coming Soon:** Sound effects, visual polish, bonus rounds, your sanity
+Working now: spinning, guessing, solving, AI opponents, basic accessibility
+Next up: sound effects, visual polish, bonus rounds
 
 ## 🤝 Contributing
 
-Found a bug? Want to add features? The town welcomes all residents! Check the existing docs and feel free to spin up a PR.
+Got an idea? Found a bug? Come on in, the town’s always open.
 
 ## 📄 License
 
-MIT - Because sharing is caring, just like in a small town.
-
----
-
-*Remember: In Wheel Of Town, the house always wins... but at least you had fun getting bankrupted by a computer.*
+MIT. Build your own, remix ours, have fun.
