@@ -128,7 +128,7 @@ function createTextLabelMesh(text, options = {}) {
   return mesh;
 }
 
-export default function WheelStage3D({ spinToken, onSpinEnd }) {
+export default function WheelStage3D({ spinToken, onSpinEnd, spinningHeld }) {
   const mountRef = useRef(null);
   const stateRef = useRef({
     spinning: false,
@@ -138,6 +138,7 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
     showedDecel: false,
     zoomPersistent: false,
     spinOwnerIndex: 0,
+    heldAnim: 0, // for wheel animation
   });
 
   useEffect(() => {
@@ -311,31 +312,52 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
       req = requestAnimationFrame(animate);
       const dt = clock.getDelta();
       const st = stateRef.current;
+      // --- Hold-to-spin logic ---
+      if (spinningHeld && !st.spinning) {
+        st.spinning = true;
+        st.angularVelocity = Math.max(st.angularVelocity, 0.12);
+      }
+      if (spinningHeld) {
+        // While held, keep increasing angular velocity up to a cap
+        st.angularVelocity = Math.min(st.angularVelocity + 0.012 * dt * 60, 1.2);
+        st.heldAnim = Math.min(st.heldAnim + dt * 2.5, 1);
+      } else {
+        st.heldAnim = Math.max(st.heldAnim - dt * 2.5, 0);
+      }
       if (st.spinning) {
-        // Even slower decay and more lingering
-        st.angularVelocity *= 0.9965; // even slower decay (was 0.993)
-        st.angularVelocity = Math.max(0, st.angularVelocity - 0.0005 * dt * 60); // gentler linear decay
+        if (!spinningHeld) {
+          // Normal decay when not held
+          st.angularVelocity *= 0.9965;
+          st.angularVelocity = Math.max(0, st.angularVelocity - 0.0005 * dt * 60);
+        }
         st.angle += st.angularVelocity * dt * 60;
         // Show zoom once during deceleration
-        if (!st.showedDecel && st.angularVelocity < 0.045) { // trigger zoom later
+        if (!st.showedDecel && st.angularVelocity < 0.045) {
           st.showedDecel = true;
-          st.zoomCountdown = 3.2; // linger zoom even longer
+          st.zoomCountdown = 3.2;
           rendererZoom.domElement.style.display = 'block';
         }
-        if (st.angularVelocity < 0.0035) { // stop at an even lower threshold
+        if (st.angularVelocity < 0.0035 && !spinningHeld) {
           st.spinning = false;
           // Resolve wedge index at pointer (12 o'clock)
           const TAU = Math.PI * 2;
-          const a = ((st.angle % TAU) + TAU) % TAU; // normalized [0, 2π)
-          const pointerAngle = Math.PI / 2; // +Y
+          const a = ((st.angle % TAU) + TAU) % TAU;
+          const pointerAngle = Math.PI / 2;
           const relative = (pointerAngle - a + TAU) % TAU;
           const wedgeIndex = Math.floor((relative / TAU) * wedgeCount) % wedgeCount;
           onSpinEnd?.(wedgeIndex);
-          // Keep zoom until the spinning player's turn ends
           st.zoomPersistent = true;
           st.zoomCountdown = Math.max(st.zoomCountdown, 1.8);
         }
       }
+      // --- Wheel animation for held spin ---
+      wheelGroup.scale.setScalar(1 + 0.08 * st.heldAnim);
+      wheelGroup.children.forEach(child => {
+        if (child.material && child.material.emissive) {
+          child.material.emissive.setHex(st.heldAnim > 0.1 ? 0xffe066 : 0x000000);
+          child.material.emissiveIntensity = st.heldAnim * 0.7;
+        }
+      });
       // Spin around Z while facing the user; positive = CCW
       wheelGroup.rotation.z = stateRef.current.angle;
       renderer.render(scene, camera);
@@ -366,7 +388,7 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
       mount.removeChild(renderer.domElement);
       mount.removeChild(rendererZoom.domElement);
     };
-  }, [onSpinEnd]);
+  }, [onSpinEnd, spinningHeld]);
 
   // Trigger spin on token change
   useEffect(() => {

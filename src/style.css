@@ -375,4 +375,16 @@ h1, h2, h3, .label, .name, .host-bubble, .scores, .tile, .board-tiles, .player {
   pointer-events: none;
 }
 
+.button.primary.spinning-held {
+  animation: spin-glow 0.7s linear infinite alternate;
+  box-shadow: 0 0 0 4px #ffd16688, 0 0 16px 4px #ffd16644;
+  background: linear-gradient(90deg, #ffd166 0%, #ffb700 100%);
+  color: #1a1200;
+  border-color: #ffd166;
+}
+@keyframes spin-glow {
+  0% { box-shadow: 0 0 0 4px #ffd16688, 0 0 16px 4px #ffd16644; filter: brightness(1.05); }
+  100% { box-shadow: 0 0 0 8px #ffd166cc, 0 0 32px 8px #ffd16688; filter: brightness(1.18); }
+}
+
 

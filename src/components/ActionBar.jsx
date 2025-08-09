@@ -78,17 +78,52 @@ function SolveModal({ open, onSubmit, onCancel }) {
   );
 }
 
-export default function ActionBar() {
+export default function ActionBar({ onSpinHoldChange }) {
   const phase = useGameStore(s => s.phase);
   const actions = useGameStore(s => s.actions);
   const canSpin = phase === 'TurnHuman' || phase === 'AwaitAction';
   const canBuyVowel = useGameStore(s => s.canBuyVowel);
   const [showSolve, setShowSolve] = useState(false);
+  const [spinningHeld, setSpinningHeld] = useState(false);
+
+  // Notify parent (App) of held state
+  useEffect(() => {
+    if (onSpinHoldChange) onSpinHoldChange(spinningHeld);
+  }, [spinningHeld, onSpinHoldChange]);
+
+  // Handlers for hold-to-spin
+  const handleSpinDown = e => {
+    if (!canSpin) return;
+    setSpinningHeld(true);
+    e.preventDefault();
+  };
+  const handleSpinUp = e => {
+    if (!canSpin) return;
+    setSpinningHeld(false);
+    actions.spinWheel();
+    e.preventDefault();
+  };
+  const handleSpinLeave = e => {
+    if (!canSpin) return;
+    setSpinningHeld(false);
+    e.preventDefault();
+  };
 
   return (
     <>
       <div className="panel" style={{ padding: 12, display: 'flex', gap: 8 }}>
-        <button className="button primary" disabled={!canSpin} data-testid="spin" onClick={actions.spinWheel}>Spin</button>
+        <button
+          className={"button primary" + (spinningHeld ? " spinning-held" : "")}
+          disabled={!canSpin}
+          data-testid="spin"
+          onMouseDown={handleSpinDown}
+          onMouseUp={handleSpinUp}
+          onMouseLeave={handleSpinLeave}
+          onTouchStart={handleSpinDown}
+          onTouchEnd={handleSpinUp}
+        >
+          Spin
+        </button>
         <button className="button" disabled={!canBuyVowel} onClick={actions.buyVowel}>Buy Vowel ($250)</button>
         <button className="button" onClick={() => setShowSolve(true)}>Solve</button>
       </div>

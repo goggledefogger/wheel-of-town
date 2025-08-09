@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useGameStore } from './state/store.js';
 import WheelStage3D from './components/WheelStage3D.jsx';
 import GameBoard from './components/GameBoard.jsx';
@@ -17,6 +17,7 @@ export default function App() {
   const startGame = useGameStore(s => s.actions.startGame);
   const spinToken = useGameStore(s => s.spinToken);
   const onSpinComplete = useGameStore(s => s.actions.onSpinComplete);
+  const [spinningHeld, setSpinningHeld] = useState(false);
 
   return (
     <div className="app-shell">
@@ -55,12 +56,12 @@ export default function App() {
             <section className="board-area">
               <GameBoard />
               <div className="actions">
-                <ActionBar />
+                <ActionBar onSpinHoldChange={setSpinningHeld} />
               </div>
               <LetterPicker />
             </section>
             <section className="wheel-area">
-              <WheelStage3D spinToken={spinToken} onSpinEnd={onSpinComplete} />
+              <WheelStage3D spinToken={spinToken} onSpinEnd={onSpinComplete} spinningHeld={spinningHeld} />
             </section>
           </main>
         </div>
