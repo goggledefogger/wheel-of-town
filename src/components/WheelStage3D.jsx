@@ -24,15 +24,15 @@ function createTextLabelMesh(text, options = {}) {
   function wrapText(text, maxWidth, fontSize) {
     const words = text.split(' ');
     if (words.length === 1) return [text]; // Single word, don't wrap
-    
+
     const lines = [];
     let currentLine = '';
     const font = `bold ${fontSize}px Arial, sans-serif`;
-    
+
     for (const word of words) {
       const testLine = currentLine ? `${currentLine} ${word}` : word;
       const testWidth = measureText(testLine, font);
-      
+
       if (testWidth <= maxWidth && currentLine) {
         currentLine = testLine;
       } else {
@@ -41,7 +41,7 @@ function createTextLabelMesh(text, options = {}) {
       }
     }
     if (currentLine) lines.push(currentLine);
-    
+
     return lines;
   }
 
@@ -50,12 +50,12 @@ function createTextLabelMesh(text, options = {}) {
     let fontSize = 24;
     let lines = [text];
     let totalHeight;
-    
+
     // Find the largest font size that fits
     for (let size = 24; size >= 12; size -= 1) {
       const font = `bold ${size}px Arial, sans-serif`;
       const singleLineWidth = measureText(text, font);
-      
+
       // Try single line first
       if (singleLineWidth <= availableWidth) {
         fontSize = size;
@@ -63,18 +63,18 @@ function createTextLabelMesh(text, options = {}) {
         totalHeight = size;
         break;
       }
-      
+
       // Try multi-line if single line doesn't fit
       const testLines = wrapText(text, availableWidth, size);
       const lineHeight = size * 1.1; // 10% line spacing
       const testTotalHeight = testLines.length * lineHeight;
-      
+
       if (testTotalHeight <= availableHeight) {
         // Check if all lines fit within width
-        const allLinesFit = testLines.every(line => 
+        const allLinesFit = testLines.every(line =>
           measureText(line, font) <= availableWidth
         );
-        
+
         if (allLinesFit) {
           fontSize = size;
           lines = testLines;
@@ -83,43 +83,43 @@ function createTextLabelMesh(text, options = {}) {
         }
       }
     }
-    
+
     return { fontSize, lines, totalHeight };
   }
 
   // Calculate available space (make it proportional to arc length)
   const availableWidth = Math.max(120, Math.min(250, arcLength * 400));
   const availableHeight = Math.max(40, Math.min(80, maxHeight * 400));
-  
+
   const layout = calculateOptimalLayout(text, availableWidth, availableHeight);
-  
+
   // Create canvas with appropriate size
   const canvasWidth = availableWidth + 20; // padding
   const canvasHeight = Math.max(60, layout.totalHeight + 20); // padding
-  
+
   const canvas = document.createElement('canvas');
   canvas.width = canvasWidth;
   canvas.height = canvasHeight;
   const ctx = canvas.getContext('2d');
-  
+
   // Set up text rendering
   ctx.fillStyle = color;
   ctx.font = `bold ${layout.fontSize}px Arial, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  
+
   // Draw each line
   const lineHeight = layout.fontSize * 1.1;
   const startY = canvasHeight / 2 - ((layout.lines.length - 1) * lineHeight) / 2;
-  
+
   layout.lines.forEach((line, index) => {
     const y = startY + (index * lineHeight);
-    
+
     // Black outline for readability
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = Math.max(2, layout.fontSize / 10);
     ctx.strokeText(line, canvasWidth / 2, y);
-    
+
     // White text fill
     ctx.fillText(line, canvasWidth / 2, y);
   });
@@ -128,17 +128,17 @@ function createTextLabelMesh(text, options = {}) {
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;
   const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
-  
+
   // Calculate final mesh dimensions based on content
   const aspectRatio = canvasWidth / canvasHeight;
   const finalHeight = Math.min(maxHeight, maxWidth / aspectRatio);
   const finalWidth = finalHeight * aspectRatio;
-  
+
   const geometry = new THREE.PlaneGeometry(finalWidth, finalHeight);
   const mesh = new THREE.Mesh(geometry, material);
   mesh.userData.size = { width: finalWidth, height: finalHeight };
   mesh.userData.dispose = () => { material.map.dispose(); material.dispose(); geometry.dispose(); };
-  
+
   return mesh;
 }
 
@@ -260,7 +260,7 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
       // Position text closer to the rim for better visibility, but still within the wedge
       const labelRadius = radius * 0.8;
       mesh.position.set(Math.cos(theta) * labelRadius, Math.sin(theta) * labelRadius, 0.12);
-      
+
       // Improved rotation logic for better readability
       let rot = theta;
       // Keep text readable by rotating text that would be upside down
@@ -304,17 +304,17 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
       const dt = clock.getDelta();
       const st = stateRef.current;
       if (st.spinning) {
-        // Faster decay so spins resolve in ~2–3s
-        st.angularVelocity *= 0.98;
-        st.angularVelocity = Math.max(0, st.angularVelocity - 0.002 * dt * 60);
+        // Even slower decay and more lingering
+        st.angularVelocity *= 0.9965; // even slower decay (was 0.993)
+        st.angularVelocity = Math.max(0, st.angularVelocity - 0.0005 * dt * 60); // gentler linear decay
         st.angle += st.angularVelocity * dt * 60;
         // Show zoom once during deceleration
-        if (!st.showedDecel && st.angularVelocity < 0.08) {
+        if (!st.showedDecel && st.angularVelocity < 0.045) { // trigger zoom later
           st.showedDecel = true;
-          st.zoomCountdown = 2.0;
+          st.zoomCountdown = 3.2; // linger zoom even longer
           rendererZoom.domElement.style.display = 'block';
         }
-        if (st.angularVelocity < 0.02) {
+        if (st.angularVelocity < 0.0035) { // stop at an even lower threshold
           st.spinning = false;
           // Resolve wedge index at pointer (12 o'clock)
           const TAU = Math.PI * 2;
@@ -325,7 +325,7 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
           onSpinEnd?.(wedgeIndex);
           // Keep zoom until the spinning player's turn ends
           st.zoomPersistent = true;
-          st.zoomCountdown = Math.max(st.zoomCountdown, 1.0);
+          st.zoomCountdown = Math.max(st.zoomCountdown, 1.8);
         }
       }
       // Spin around Z while facing the user; positive = CCW
@@ -366,7 +366,7 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
     const st = stateRef.current;
     if (st.spinning) return;
     st.spinning = true;
-    st.angularVelocity = 0.25 + Math.random() * 0.5; // initial speed
+    st.angularVelocity = 0.08 + Math.random() * 0.13; // even lower initial speed
     // Hide zoom when spin starts
     st.zoomCountdown = 0;
     st.showedDecel = false;

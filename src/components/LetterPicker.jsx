@@ -18,7 +18,7 @@ export default function LetterPicker() {
         const isVowel = VOWELS.has(l);
         const disabled = isGuessed || !canGuess || (!buyingVowel && isVowel) || (buyingVowel && !isVowel);
         return (
-          <button key={l} disabled={disabled} onClick={() => actions.pickLetter(l)} aria-label={`Letter ${l}`}>
+          <button key={l} disabled={disabled} onClick={() => actions.pickLetter(l)} aria-label={`Letter ${l}`} className={isVowel ? 'vowel' : ''}>
             {l}
           </button>
         );

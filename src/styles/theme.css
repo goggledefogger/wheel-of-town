@@ -1,35 +1,38 @@
 :root {
   --color-bg: #0a0e1a;
-  --color-surface: #0f1629;
-  --color-panel: #121b32;
-  --color-border: #24314d;
+  --color-surface: #10182c;
+  --color-panel: #16213a;
+  --color-border: #2a3a5d;
   --color-text: #e6f0ff;
   --color-muted: #a7b6d9;
   --color-accent: #ffd166; /* gold */
   --color-accent-2: #06b6d4; /* teal */
   --color-success: #1fa26a; /* board green */
   --color-tile: #0b1b2a;
-  --shadow-soft: 0 6px 16px rgba(0,0,0,0.35);
-  --radius: 10px;
+  --shadow-soft: 0 6px 24px rgba(0,0,0,0.38);
+  --radius: 12px;
   --space-1: 4px;
   --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
+  --space-3: 14px;
+  --space-4: 20px;
+  --space-5: 28px;
+  --space-6: 40px;
 }
 
-body { background: radial-gradient(1200px 600px at 50% -10%, #122044 0%, var(--color-bg) 55%, #070a12 100%); color: var(--color-text); }
+body { background: radial-gradient(1200px 600px at 50% -10%, #162044 0%, var(--color-bg) 55%, #070a12 100%); color: var(--color-text); }
 
 .button {
-  padding: 10px 16px; border-radius: var(--radius); border: 1px solid var(--color-border);
+  padding: 12px 20px; border-radius: var(--radius); border: 1.5px solid var(--color-border);
   background: linear-gradient(180deg, #1b2744 0%, #0f182e 100%);
   color: var(--color-text); cursor: pointer; box-shadow: var(--shadow-soft);
+  font-size: 1.08em; font-weight: 700;
 }
 .button.primary { border-color: #5a6fa5; background: linear-gradient(180deg, #1b2a4f 0%, #152344 100%); }
-.button.accent { border-color: #e6b657; background: linear-gradient(180deg, #ffdc80 0%, #e5b54e 100%); color: #1a1200; }
+.button.accent { border-color: #e6b657; background: linear-gradient(180deg, #ffdc80 0%, #e5b54e 100%); color: #1a1200; box-shadow: 0 2px 12px #ffd16655; }
+.button:active { filter: brightness(0.95); }
+.button:focus { outline: 2.5px solid var(--color-accent-2); }
 
-.panel { background: var(--color-panel); border: 1px solid var(--color-border); border-radius: var(--radius); box-shadow: var(--shadow-soft); }
+.panel { background: var(--color-panel); border: 1.5px solid var(--color-border); border-radius: var(--radius); box-shadow: var(--shadow-soft); }
 
 /* High contrast theme */
 .high-contrast {

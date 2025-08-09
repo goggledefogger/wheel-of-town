@@ -37,8 +37,8 @@ export const useGameStore = create((set, get) => ({
   spinToken: 0,
   players: [
     { id: 'p1', name: 'You', type: 'Human', roundBank: 0, totalBank: 0 },
-    { id: 'p2', name: 'AI Cautious', type: 'AI', personality: 'Cautious', roundBank: 0, totalBank: 0 },
-    { id: 'p3', name: 'AI Aggressive', type: 'AI', personality: 'Aggressive', roundBank: 0, totalBank: 0 },
+    { id: 'p2', name: 'Tiny Roy', type: 'AI', personality: 'Cautious', roundBank: 0, totalBank: 0 },
+    { id: 'p3', name: 'Big Roy', type: 'AI', personality: 'Aggressive', roundBank: 0, totalBank: 0 },
   ],
   board: {
     category: '',
