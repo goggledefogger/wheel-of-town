@@ -28,11 +28,12 @@ function createTextLabelMesh(text, options = {}) {
     text-align: center;
     line-height: 60px;
     text-shadow:
-      -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-      1px 1px 0 #000,
-      0 0 3px #000;
+      -2px -2px 0 #000,
+      2px -2px 0 #000,
+      -2px 2px 0 #000,
+      2px 2px 0 #000,
+      0 0 6px #000,
+      0 0 12px #000;
     white-space: nowrap;
     overflow: hidden;
   `;
@@ -51,12 +52,14 @@ function createTextLabelMesh(text, options = {}) {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  // Black outline
+  // Enhanced black outline
   ctx.strokeStyle = '#000000';
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 4;
   ctx.strokeText(text, 100, 30);
 
-  // White fill
+  // Add glow effect
+  ctx.shadowColor = '#ffffff';
+  ctx.shadowBlur = 8;
   ctx.fillText(text, 100, 30);
 
   // Clean up
@@ -87,7 +90,11 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
   useEffect(() => {
     const mount = mountRef.current;
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0c0c0f);
+    
+    // Enhanced background with studio-like atmosphere
+    scene.background = new THREE.Color(0x050812);
+    scene.fog = new THREE.Fog(0x050812, 8, 15);
+    
     // Shared geometry params
     const radius = 1.2;
 
@@ -98,6 +105,11 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(420, 420);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
     renderer.domElement.className = 'wheel-canvas';
     renderer.domElement.setAttribute('data-testid', 'wheel');
     mount.appendChild(renderer.domElement);
@@ -105,15 +117,38 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
     // Zoom renderer overlay
     const rendererZoom = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     rendererZoom.setSize(220, 220);
+    rendererZoom.shadowMap.enabled = true;
+    rendererZoom.shadowMap.type = THREE.PCFSoftShadowMap;
+    rendererZoom.outputColorSpace = THREE.SRGBColorSpace;
+    rendererZoom.toneMapping = THREE.ACESFilmicToneMapping;
+    rendererZoom.toneMappingExposure = 1.2;
     rendererZoom.domElement.className = 'zoom-overlay';
     rendererZoom.domElement.setAttribute('data-testid', 'zoom');
     rendererZoom.domElement.style.display = 'none';
     mount.appendChild(rendererZoom.domElement);
 
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(2, 3, 4);
-    scene.add(light);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+    // Enhanced lighting setup for studio atmosphere
+    const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    mainLight.position.set(3, 4, 5);
+    mainLight.castShadow = true;
+    mainLight.shadow.mapSize.width = 2048;
+    mainLight.shadow.mapSize.height = 2048;
+    mainLight.shadow.camera.near = 0.5;
+    mainLight.shadow.camera.far = 50;
+    scene.add(mainLight);
+
+    // Key fill light
+    const fillLight = new THREE.DirectionalLight(0x4488ff, 1.2);
+    fillLight.position.set(-2, 2, 3);
+    scene.add(fillLight);
+
+    // Ambient light for overall illumination
+    scene.add(new THREE.AmbientLight(0x404080, 0.4));
+
+    // Rim light for dramatic effect
+    const rimLight = new THREE.DirectionalLight(0xffd700, 0.8);
+    rimLight.position.set(0, -3, 2);
+    scene.add(rimLight);
 
     // Zoom camera (tighter FOV)
     const cameraZoom = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
@@ -124,6 +159,8 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
 
     // Wheel facing the user (in XY), spinning around Z
     const wheelGroup = new THREE.Group();
+    wheelGroup.castShadow = true;
+    wheelGroup.receiveShadow = true;
     scene.add(wheelGroup);
 
     // Colored wedge sectors
@@ -132,11 +169,27 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
 
     const wedgesData = useGameStore.getState().wheel.wedges || [];
     const wedgeCount = wedgesData.length || DEFAULT_WEDGE_COUNT;
-    const colors = [0xe53935, 0x8e24aa, 0x3949ab, 0x1e88e5, 0x00897b, 0x43a047, 0xfdd835, 0xfb8c00, 0x6d4c41];
+    
+    // Enhanced color palette with more vibrant, TV-show-like colors
+    const colors = [
+      0xff1744, // Bright Red
+      0x8e24aa, // Purple
+      0x1976d2, // Blue
+      0x00acc1, // Cyan
+      0x00796b, // Teal
+      0x388e3c, // Green
+      0xfbc02d, // Yellow
+      0xff9800, // Orange
+      0x5d4037, // Brown
+      0xe91e63, // Pink
+      0x673ab7, // Deep Purple
+      0x3f51b5  // Indigo
+    ];
+    
     const colorFor = (i) => {
       const w = wedgesData[i];
-      if (w?.type === 'Bankrupt') return 0x000000;
-      if (w?.type === 'LoseTurn') return 0x5a5a5a;
+      if (w?.type === 'Bankrupt') return 0x1a0000; // Dark red
+      if (w?.type === 'LoseTurn') return 0x2a2a2a; // Dark gray
       return colors[i % colors.length];
     };
 
@@ -145,34 +198,71 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
       const angleEnd = ((i + 1) / wedgeCount) * Math.PI * 2;
       const shape = new THREE.Shape();
       shape.moveTo(0, 0);
-      const steps = 12;
+      const steps = 16; // More steps for smoother curves
       for (let s = 0; s <= steps; s++) {
         const t = angleStart + (s / steps) * (angleEnd - angleStart);
         shape.lineTo(Math.cos(t) * radius, Math.sin(t) * radius);
       }
       shape.lineTo(0, 0);
-      const extrude = new THREE.ExtrudeGeometry(shape, { depth: 0.06, bevelEnabled: false });
-      const mat = new THREE.MeshStandardMaterial({ color: colorFor(i), roughness: 0.6 });
+      const extrude = new THREE.ExtrudeGeometry(shape, { depth: 0.08, bevelEnabled: true, bevelSize: 0.01, bevelThickness: 0.01 });
+      
+      // Enhanced material with metallic properties
+      const mat = new THREE.MeshStandardMaterial({ 
+        color: colorFor(i), 
+        roughness: 0.3,
+        metalness: 0.1,
+        emissive: new THREE.Color(colorFor(i)).multiplyScalar(0.05)
+      });
+      
       const mesh = new THREE.Mesh(extrude, mat);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
       // Sits in XY plane; lift slightly to avoid z-fighting
       mesh.position.z = 0.01;
       wedgeGroup.add(mesh);
     }
 
-    // Rim disc (thin ring) for nicer look
-    const ringGeo = new THREE.RingGeometry(radius * 0.96, radius, 64);
-    const ringMat = new THREE.MeshStandardMaterial({ color: 0x222833, side: THREE.DoubleSide });
+    // Enhanced rim with metallic gold appearance
+    const ringGeo = new THREE.RingGeometry(radius * 0.96, radius + 0.02, 64);
+    const ringMat = new THREE.MeshStandardMaterial({ 
+      color: 0xffd700, 
+      metalness: 0.8, 
+      roughness: 0.2,
+      emissive: 0x332200,
+      side: THREE.DoubleSide 
+    });
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.position.z = 0.04;
+    ring.castShadow = true;
+    ring.receiveShadow = true;
     wheelGroup.add(ring);
 
-    // Pointer at 12 o'clock (+Y), in front of wheel
-    const pointerGeo = new THREE.ConeGeometry(0.06, 0.16, 12);
-    const pointerMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.2, roughness: 0.4 });
+    // Enhanced pointer with chrome-like finish
+    const pointerGeo = new THREE.ConeGeometry(0.08, 0.2, 16);
+    const pointerMat = new THREE.MeshStandardMaterial({ 
+      color: 0xffffff, 
+      metalness: 0.9, 
+      roughness: 0.1,
+      emissive: 0x111111
+    });
     const pointer = new THREE.Mesh(pointerGeo, pointerMat);
     pointer.rotation.x = Math.PI; // point down onto wheel
-    pointer.position.set(0, radius + 0.08, 0.2);
+    pointer.position.set(0, radius + 0.1, 0.25);
+    pointer.castShadow = true;
     scene.add(pointer);
+
+    // Add a base/pedestal for the wheel
+    const baseGeo = new THREE.CylinderGeometry(radius * 0.3, radius * 0.4, 0.1, 32);
+    const baseMat = new THREE.MeshStandardMaterial({
+      color: 0x333366,
+      metalness: 0.6,
+      roughness: 0.4
+    });
+    const base = new THREE.Mesh(baseGeo, baseMat);
+    base.position.z = -0.1;
+    base.castShadow = true;
+    base.receiveShadow = true;
+    scene.add(base);
 
     // Text labels for wedges (no background boxes, natural orientation)
     const labelsGroup = new THREE.Group();
