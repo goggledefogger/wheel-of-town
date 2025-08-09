@@ -1,12 +1,12 @@
-# Wheel of Fortune (Web) — Product Requirements Document (PRD)
+# Wheel Of Town (Web) — Product Requirements Document (PRD)
 
 ## Overview
-Build a browser-based Wheel of Fortune game using React (UI), JavaScript, and three.js (3D wheel + stage). The game runs locally via a simple React dev server (Vite). One human competes against two AI players. Pat (host) and Vanna (letter board presenter) appear as stylized avatars with lightweight lines, reactions, and animations.
+Build a browser-based Wheel Of Town game using React (UI), JavaScript, and three.js (3D wheel + stage). The game runs locally via a simple React dev server (Vite). One human competes against two AI players. Pat (host) and Vanna (letter board presenter) appear as stylized avatars with lightweight lines, reactions, and animations.
 
 The experience aims to be authentic, accessible, and performant on modern desktop browsers, with simplified but faithful rules.
 
 ## Goals
-- Deliver a fun, replayable single-session game of Wheel of Fortune with:
+- Deliver a fun, replayable single-session game of Wheel Of Town with:
   - One human player, two AI players
   - A 3D spinning wheel with realistic physics feel
   - Category-based puzzles, letter guessing, vowel buying, and solving

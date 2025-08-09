@@ -1,4 +1,4 @@
-# Tasks — Wheel of Fortune (Web)
+# Tasks — Wheel Of Town (Web)
 
 ## Today (Short-Term)
 - [x] Write PRD, Design, Architecture docs

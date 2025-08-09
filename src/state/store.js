@@ -51,7 +51,7 @@ export const useGameStore = create((set, get) => ({
     lastResult: null,
   },
   host: {
-    lines: ['Welcome to Wheel of Fortune!'],
+    lines: ['Welcome to Wheel Of Town!'],
   },
   settings: { difficulty: 'Normal', sound: true, highContrast: false, reducedMotion: false },
 
@@ -224,7 +224,7 @@ export const useGameStore = create((set, get) => ({
         roundIndex: 0,
         currentPlayerIndex: 0,
         players: state.players.map(p => ({ ...p, roundBank: 0, totalBank: 0 })),
-        host: { lines: ['Welcome to Wheel of Fortune!'] },
+        host: { lines: ['Welcome to Wheel Of Town!'] },
       }));
     },
 

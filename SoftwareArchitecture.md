@@ -1,4 +1,4 @@
-# Wheel of Fortune (Web) — Software Architecture
+# Wheel Of Town (Web) — Software Architecture
 
 ## Tech Stack
 - UI: React 18 (JavaScript)

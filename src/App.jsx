@@ -27,7 +27,7 @@ export default function App() {
       <div style={{position:'absolute',left:-9999,top:-9999}} aria-hidden data-testid="hostLineCount">{hostLines.length}</div>
       {phase === 'Title' && (
         <div className="title-screen">
-          <h1>Wheel of Fortune</h1>
+          <h1>Wheel Of Town</h1>
           <button className="button accent" data-testid="start" onClick={startGame}>Start Game</button>
         </div>
       )}

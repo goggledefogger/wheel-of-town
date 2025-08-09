@@ -1,4 +1,4 @@
-# Wheel of Fortune (Web) — Design Doc
+# Wheel Of Town (Web) — Design Doc
 
 ## UX Overview
 Desktop-first experience with a 3D stage and wheel, a puzzle board, player panels, and host area.
