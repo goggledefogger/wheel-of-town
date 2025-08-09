@@ -1,0 +1,51 @@
+:root {
+  --color-bg: #0a0e1a;
+  --color-surface: #0f1629;
+  --color-panel: #121b32;
+  --color-border: #24314d;
+  --color-text: #e6f0ff;
+  --color-muted: #a7b6d9;
+  --color-accent: #ffd166; /* gold */
+  --color-accent-2: #06b6d4; /* teal */
+  --color-success: #1fa26a; /* board green */
+  --color-tile: #0b1b2a;
+  --shadow-soft: 0 6px 16px rgba(0,0,0,0.35);
+  --radius: 10px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+}
+
+body { background: radial-gradient(1200px 600px at 50% -10%, #122044 0%, var(--color-bg) 55%, #070a12 100%); color: var(--color-text); }
+
+.button {
+  padding: 10px 16px; border-radius: var(--radius); border: 1px solid var(--color-border);
+  background: linear-gradient(180deg, #1b2744 0%, #0f182e 100%);
+  color: var(--color-text); cursor: pointer; box-shadow: var(--shadow-soft);
+}
+.button.primary { border-color: #5a6fa5; background: linear-gradient(180deg, #1b2a4f 0%, #152344 100%); }
+.button.accent { border-color: #e6b657; background: linear-gradient(180deg, #ffdc80 0%, #e5b54e 100%); color: #1a1200; }
+
+.panel { background: var(--color-panel); border: 1px solid var(--color-border); border-radius: var(--radius); box-shadow: var(--shadow-soft); }
+
+/* High contrast theme */
+.high-contrast {
+  --color-bg: #000000;
+  --color-surface: #050505;
+  --color-panel: #0a0a0a;
+  --color-border: #2a2a2a;
+  --color-text: #ffffff;
+  --color-muted: #d0d0d0;
+  --color-accent: #ffeb3b;
+  --color-accent-2: #00e5ff;
+  --color-success: #2cff8f;
+  --color-tile: #0e0e0e;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
