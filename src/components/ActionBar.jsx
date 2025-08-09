@@ -125,7 +125,7 @@ export default function ActionBar({ onSpinHoldChange }) {
           Spin
         </button>
         <button className="button" disabled={!canBuyVowel} onClick={actions.buyVowel}>Buy Vowel ($250)</button>
-        <button className="button" onClick={() => setShowSolve(true)}>Solve</button>
+        <button className="button" disabled={!canSpin} onClick={() => setShowSolve(true)}>Solve</button>
       </div>
       <SolveModal
         open={showSolve}

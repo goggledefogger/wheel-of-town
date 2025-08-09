@@ -59,7 +59,9 @@ export const useGameStore = create((set, get) => ({
   get canBuyVowel() {
     const s = get();
     const p = s.players[s.currentPlayerIndex];
-    return p.roundBank >= 250 && s.phase !== 'Spin';
+    const isHumanTurn = p.type === 'Human';
+    const isCorrectPhase = s.phase === 'TurnHuman' || s.phase === 'AwaitAction';
+    return isHumanTurn && p.roundBank >= 250 && isCorrectPhase;
   },
 
   actions: {
