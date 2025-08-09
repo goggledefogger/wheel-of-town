@@ -1,12 +1,12 @@
 {
-  "createdAt": "2025-08-09T06:26:07.690Z",
+  "createdAt": "2025-08-09T20:27:05.764Z",
   "artifacts": [
-    "/Users/Danny/Source/space-mini-golf/tests/artifacts/wheel-page.png",
-    "/Users/Danny/Source/space-mini-golf/tests/artifacts/wheel-canvas.png",
-    "/Users/Danny/Source/space-mini-golf/tests/artifacts/wheel-zoom-canvas.png"
+    "/workspace/tests/artifacts/wheel-page.png",
+    "/workspace/tests/artifacts/wheel-canvas.png",
+    "/workspace/tests/artifacts/wheel-zoom-canvas.png"
   ],
   "metrics": {
-    "avgWidthRatio": 1.542069163192209,
-    "avgHeightRadius": 0.355267231323547
+    "avgWidthRatio": 1.7316296722212565,
+    "avgHeightRadius": 0.3635527774676572
   }
 }

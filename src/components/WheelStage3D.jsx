@@ -6,69 +6,139 @@ const DEFAULT_WEDGE_COUNT = 24;
 
 function createTextLabelMesh(text, options = {}) {
   const {
-    fontSize = 24,
     color = '#ffffff',
-    width = 0.3,
-    height = 0.12,
+    maxWidth = 0.3,
+    maxHeight = 0.12,
+    arcLength = 0.2,
   } = options;
 
-  // Create HTML element with proper CSS styling
-  const div = document.createElement('div');
-  div.style.cssText = `
-    position: absolute;
-    left: -9999px;
-    top: -9999px;
-    width: 200px;
-    height: 60px;
-    background: transparent;
-    color: ${color};
-    font-family: Arial, sans-serif;
-    font-size: ${fontSize}px;
-    font-weight: bold;
-    text-align: center;
-    line-height: 60px;
-    text-shadow:
-      -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-      1px 1px 0 #000,
-      0 0 3px #000;
-    white-space: nowrap;
-    overflow: hidden;
-  `;
-  div.textContent = text;
-  document.body.appendChild(div);
+  // Helper function to measure text width
+  function measureText(text, font) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.font = font;
+    return ctx.measureText(text).width;
+  }
 
-  // Convert to canvas
+  // Split long text into multiple lines if needed
+  function wrapText(text, maxWidth, fontSize) {
+    const words = text.split(' ');
+    if (words.length === 1) return [text]; // Single word, don't wrap
+    
+    const lines = [];
+    let currentLine = '';
+    const font = `bold ${fontSize}px Arial, sans-serif`;
+    
+    for (const word of words) {
+      const testLine = currentLine ? `${currentLine} ${word}` : word;
+      const testWidth = measureText(testLine, font);
+      
+      if (testWidth <= maxWidth && currentLine) {
+        currentLine = testLine;
+      } else {
+        if (currentLine) lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+    if (currentLine) lines.push(currentLine);
+    
+    return lines;
+  }
+
+  // Calculate optimal font size and layout
+  function calculateOptimalLayout(text, availableWidth, availableHeight) {
+    let fontSize = 24;
+    let lines = [text];
+    let totalHeight;
+    
+    // Find the largest font size that fits
+    for (let size = 24; size >= 12; size -= 1) {
+      const font = `bold ${size}px Arial, sans-serif`;
+      const singleLineWidth = measureText(text, font);
+      
+      // Try single line first
+      if (singleLineWidth <= availableWidth) {
+        fontSize = size;
+        lines = [text];
+        totalHeight = size;
+        break;
+      }
+      
+      // Try multi-line if single line doesn't fit
+      const testLines = wrapText(text, availableWidth, size);
+      const lineHeight = size * 1.1; // 10% line spacing
+      const testTotalHeight = testLines.length * lineHeight;
+      
+      if (testTotalHeight <= availableHeight) {
+        // Check if all lines fit within width
+        const allLinesFit = testLines.every(line => 
+          measureText(line, font) <= availableWidth
+        );
+        
+        if (allLinesFit) {
+          fontSize = size;
+          lines = testLines;
+          totalHeight = testTotalHeight;
+          break;
+        }
+      }
+    }
+    
+    return { fontSize, lines, totalHeight };
+  }
+
+  // Calculate available space (make it proportional to arc length)
+  const availableWidth = Math.max(120, Math.min(250, arcLength * 400));
+  const availableHeight = Math.max(40, Math.min(80, maxHeight * 400));
+  
+  const layout = calculateOptimalLayout(text, availableWidth, availableHeight);
+  
+  // Create canvas with appropriate size
+  const canvasWidth = availableWidth + 20; // padding
+  const canvasHeight = Math.max(60, layout.totalHeight + 20); // padding
+  
   const canvas = document.createElement('canvas');
-  canvas.width = 200;
-  canvas.height = 60;
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
   const ctx = canvas.getContext('2d');
-
-  // Render the styled text to canvas
+  
+  // Set up text rendering
   ctx.fillStyle = color;
-  ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+  ctx.font = `bold ${layout.fontSize}px Arial, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
+  
+  // Draw each line
+  const lineHeight = layout.fontSize * 1.1;
+  const startY = canvasHeight / 2 - ((layout.lines.length - 1) * lineHeight) / 2;
+  
+  layout.lines.forEach((line, index) => {
+    const y = startY + (index * lineHeight);
+    
+    // Black outline for readability
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = Math.max(2, layout.fontSize / 10);
+    ctx.strokeText(line, canvasWidth / 2, y);
+    
+    // White text fill
+    ctx.fillText(line, canvasWidth / 2, y);
+  });
 
-  // Black outline
-  ctx.strokeStyle = '#000000';
-  ctx.lineWidth = 3;
-  ctx.strokeText(text, 100, 30);
-
-  // White fill
-  ctx.fillText(text, 100, 30);
-
-  // Clean up
-  document.body.removeChild(div);
-
+  // Create texture and mesh
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;
   const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
-  const geometry = new THREE.PlaneGeometry(width, height);
+  
+  // Calculate final mesh dimensions based on content
+  const aspectRatio = canvasWidth / canvasHeight;
+  const finalHeight = Math.min(maxHeight, maxWidth / aspectRatio);
+  const finalWidth = finalHeight * aspectRatio;
+  
+  const geometry = new THREE.PlaneGeometry(finalWidth, finalHeight);
   const mesh = new THREE.Mesh(geometry, material);
-  mesh.userData.size = { width, height };
+  mesh.userData.size = { width: finalWidth, height: finalHeight };
   mesh.userData.dispose = () => { material.map.dispose(); material.dispose(); geometry.dispose(); };
+  
   return mesh;
 }
 
@@ -181,19 +251,22 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
     for (let i = 0; i < wedgeCount; i++) {
       const label = wedgesData[i]?.label || '';
       const arcLen = outerEdge * wedgeAngle;
-                        const targetWidth = arcLen * 0.9; // fit within wedge
-      const targetHeight = radius * 0.25; // reasonable height
       const mesh = createTextLabelMesh(label, {
-        width: targetWidth,
-        height: targetHeight,
-        fontSize: 20
+        maxWidth: radius * 0.4, // Max width based on radius
+        maxHeight: radius * 0.2, // Max height based on radius
+        arcLength: arcLen // Pass arc length for dynamic sizing
       });
       const theta = ((i + 0.5) / wedgeCount) * Math.PI * 2;
-      const labelRadius = radius * 0.75; // simple fixed radius
+      // Position text closer to the rim for better visibility, but still within the wedge
+      const labelRadius = radius * 0.8;
       mesh.position.set(Math.cos(theta) * labelRadius, Math.sin(theta) * labelRadius, 0.12);
-      // Align text along tangent but keep upright
+      
+      // Improved rotation logic for better readability
       let rot = theta;
-      if (Math.cos(theta) < 0) rot += Math.PI;
+      // Keep text readable by rotating text that would be upside down
+      if (theta > Math.PI / 2 && theta < 3 * Math.PI / 2) {
+        rot += Math.PI; // Flip text that would be upside down
+      }
       mesh.rotation.z = rot;
       labelsGroup.add(mesh);
     }
@@ -205,11 +278,12 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
         getLabelMetrics: () => {
           const metrics = [];
           const wedgeAngleLocal = (Math.PI * 2) / wedgeCount;
+          const labelRadiusLocal = radius * 0.8; // Same as used above
           for (const child of labelsGroup.children) {
             const bbox = new THREE.Box3().setFromObject(child);
             const size = new THREE.Vector3();
             bbox.getSize(size);
-            const arcLen = labelRadius * wedgeAngleLocal;
+            const arcLen = labelRadiusLocal * wedgeAngleLocal;
             metrics.push({
               width: size.x,
               height: size.y,
@@ -218,7 +292,7 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
               heightToRadius: size.y / radius,
             });
           }
-          return { wedgeCount, radius, labelRadius, wedgeAngle: wedgeAngleLocal, metrics };
+          return { wedgeCount, radius, labelRadius: labelRadiusLocal, wedgeAngle: wedgeAngleLocal, metrics };
         }
       };
     }
