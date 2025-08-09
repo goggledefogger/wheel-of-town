@@ -12,21 +12,26 @@ function createTextLabelMesh(text, options = {}) {
     height = 0.12,
   } = options;
 
+  // Increase canvas resolution for crisp text (4x resolution)
+  const canvasWidth = 800;
+  const canvasHeight = 240;
+  const pixelRatio = 4; // For high DPI displays
+
   // Create HTML element with proper CSS styling
   const div = document.createElement('div');
   div.style.cssText = `
     position: absolute;
     left: -9999px;
     top: -9999px;
-    width: 200px;
-    height: 60px;
+    width: ${canvasWidth / pixelRatio}px;
+    height: ${canvasHeight / pixelRatio}px;
     background: transparent;
     color: ${color};
     font-family: Arial, sans-serif;
     font-size: ${fontSize}px;
     font-weight: bold;
     text-align: center;
-    line-height: 60px;
+    line-height: ${canvasHeight / pixelRatio}px;
     text-shadow:
       -2px -2px 0 #000,
       2px -2px 0 #000,
@@ -40,11 +45,19 @@ function createTextLabelMesh(text, options = {}) {
   div.textContent = text;
   document.body.appendChild(div);
 
-  // Convert to canvas
+  // Convert to canvas with high resolution
   const canvas = document.createElement('canvas');
-  canvas.width = 200;
-  canvas.height = 60;
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
   const ctx = canvas.getContext('2d');
+  
+  // Enable high-quality text rendering
+  ctx.textRenderingOptimization = 'optimizeQuality';
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
+  // Scale context for high DPI
+  ctx.scale(pixelRatio, pixelRatio);
 
   // Render the styled text to canvas
   ctx.fillStyle = color;
@@ -52,22 +65,32 @@ function createTextLabelMesh(text, options = {}) {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  // Enhanced black outline
+  // Enhanced black outline with better antialiasing
   ctx.strokeStyle = '#000000';
-  ctx.lineWidth = 4;
-  ctx.strokeText(text, 100, 30);
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.strokeText(text, canvasWidth / (2 * pixelRatio), canvasHeight / (2 * pixelRatio));
 
-  // Add glow effect
+  // Add subtle glow effect
   ctx.shadowColor = '#ffffff';
-  ctx.shadowBlur = 8;
-  ctx.fillText(text, 100, 30);
+  ctx.shadowBlur = 4;
+  ctx.fillText(text, canvasWidth / (2 * pixelRatio), canvasHeight / (2 * pixelRatio));
 
   // Clean up
   document.body.removeChild(div);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;
-  const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+  texture.generateMipmaps = false; // Prevent blurriness
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  
+  const material = new THREE.MeshBasicMaterial({ 
+    map: texture, 
+    transparent: true,
+    alphaTest: 0.1 // Helps with text clarity
+  });
   const geometry = new THREE.PlaneGeometry(width, height);
   const mesh = new THREE.Mesh(geometry, material);
   mesh.userData.size = { width, height };
@@ -109,7 +132,8 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.4; // Increased brightness to reduce shadow appearance
+    renderer.clearColor = new THREE.Color(0x050812); // Explicit clear color
     renderer.domElement.className = 'wheel-canvas';
     renderer.domElement.setAttribute('data-testid', 'wheel');
     mount.appendChild(renderer.domElement);
@@ -121,32 +145,34 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
     rendererZoom.shadowMap.type = THREE.PCFSoftShadowMap;
     rendererZoom.outputColorSpace = THREE.SRGBColorSpace;
     rendererZoom.toneMapping = THREE.ACESFilmicToneMapping;
-    rendererZoom.toneMappingExposure = 1.2;
+    rendererZoom.toneMappingExposure = 1.4; // Match main renderer
     rendererZoom.domElement.className = 'zoom-overlay';
     rendererZoom.domElement.setAttribute('data-testid', 'zoom');
     rendererZoom.domElement.style.display = 'none';
     mount.appendChild(rendererZoom.domElement);
 
-    // Enhanced lighting setup for studio atmosphere
-    const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    // Enhanced lighting setup for studio atmosphere with reduced shadows
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1.8); // Reduced intensity
     mainLight.position.set(3, 4, 5);
     mainLight.castShadow = true;
-    mainLight.shadow.mapSize.width = 2048;
-    mainLight.shadow.mapSize.height = 2048;
+    mainLight.shadow.mapSize.width = 1024; // Reduced shadow resolution for softer shadows
+    mainLight.shadow.mapSize.height = 1024;
     mainLight.shadow.camera.near = 0.5;
     mainLight.shadow.camera.far = 50;
+    mainLight.shadow.bias = -0.0001; // Reduce shadow acne
+    mainLight.shadow.radius = 8; // Softer shadow edges
     scene.add(mainLight);
 
-    // Key fill light
-    const fillLight = new THREE.DirectionalLight(0x4488ff, 1.2);
+    // Key fill light with more intensity
+    const fillLight = new THREE.DirectionalLight(0x4488ff, 1.5);
     fillLight.position.set(-2, 2, 3);
     scene.add(fillLight);
 
-    // Ambient light for overall illumination
-    scene.add(new THREE.AmbientLight(0x404080, 0.4));
+    // Increased ambient light for overall illumination to reduce shadows
+    scene.add(new THREE.AmbientLight(0x404080, 0.8)); // Doubled ambient light
 
-    // Rim light for dramatic effect
-    const rimLight = new THREE.DirectionalLight(0xffd700, 0.8);
+    // Rim light for dramatic effect (reduced intensity)
+    const rimLight = new THREE.DirectionalLight(0xffd700, 0.5);
     rimLight.position.set(0, -3, 2);
     scene.add(rimLight);
 
@@ -264,27 +290,53 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
     base.receiveShadow = true;
     scene.add(base);
 
-    // Text labels for wedges (no background boxes, natural orientation)
+    // Text labels for wedges (improved sizing and positioning)
     const labelsGroup = new THREE.Group();
     const wedgeAngle = (Math.PI * 2) / wedgeCount;
-    const outerEdge = radius * 0.98; // near rim
+    const labelRadius = radius * 0.7; // Optimal distance from center
+    
     for (let i = 0; i < wedgeCount; i++) {
       const label = wedgesData[i]?.label || '';
-      const arcLen = outerEdge * wedgeAngle;
-                        const targetWidth = arcLen * 0.9; // fit within wedge
-      const targetHeight = radius * 0.25; // reasonable height
+      if (!label) continue; // Skip empty labels
+      
+      // Calculate optimal text size based on wedge dimensions
+      const arcLen = labelRadius * wedgeAngle;
+      const maxTextWidth = arcLen * 0.8; // Leave some margin
+      const maxTextHeight = radius * 0.15; // Reasonable height limit
+      
+      // Dynamic font size based on text length and available space
+      let fontSize = 18;
+      if (label.length > 10) fontSize = 14;
+      else if (label.length > 6) fontSize = 16;
+      else if (label.length < 4) fontSize = 22;
+      
       const mesh = createTextLabelMesh(label, {
-        width: targetWidth,
-        height: targetHeight,
-        fontSize: 20
+        width: maxTextWidth,
+        height: maxTextHeight,
+        fontSize: fontSize
       });
+      
+      // Position text in the center of each wedge
       const theta = ((i + 0.5) / wedgeCount) * Math.PI * 2;
-      const labelRadius = radius * 0.75; // simple fixed radius
-      mesh.position.set(Math.cos(theta) * labelRadius, Math.sin(theta) * labelRadius, 0.12);
-      // Align text along tangent but keep upright
+      mesh.position.set(
+        Math.cos(theta) * labelRadius, 
+        Math.sin(theta) * labelRadius, 
+        0.15 // Slightly higher to avoid z-fighting
+      );
+      
+      // Rotate text to be readable - always upright orientation
       let rot = theta;
-      if (Math.cos(theta) < 0) rot += Math.PI;
+      // Keep text upright by rotating 180° for text on the left side
+      if (Math.cos(theta) < 0) {
+        rot += Math.PI;
+      }
+      // Ensure text is never upside down
+      rot = ((rot % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+      if (rot > Math.PI / 2 && rot < 3 * Math.PI / 2) {
+        rot += Math.PI;
+      }
       mesh.rotation.z = rot;
+      
       labelsGroup.add(mesh);
     }
     wheelGroup.add(labelsGroup);
