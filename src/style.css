@@ -388,4 +388,22 @@ h1, h2, h3, .label, .name, .host-bubble, .scores, .tile, .board-tiles, .player {
   100% { box-shadow: 0 0 0 8px #ffd166cc, 0 0 32px 8px #ffd16688; filter: brightness(1.18); }
 }
 
+/* Element Status UI */
+.element-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.2);
+  font-size: 0.9em;
+}
+.element-status .icon {
+  font-size: 1.2em;
+}
+.element-status .combo-count {
+  font-weight: bold;
+  font-family: 'Inter', sans-serif;
+}
 

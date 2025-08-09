@@ -7,6 +7,9 @@ import LetterPicker from './components/LetterPicker.jsx';
 import HostDialogue from './components/Hosts/HostDialogue.jsx';
 import RoundSummary from './components/Summary/RoundSummary.jsx';
 import GameSummary from './components/Summary/GameSummary.jsx';
+import ElementStatusUI from './components/ElementStatusUI.jsx';
+import ToastContainer from './components/ToastContainer.jsx';
+import AnagramRiftModal from './components/AnagramRiftModal.jsx';
 
 export default function App() {
   const phase = useGameStore(s => s.phase);
@@ -21,6 +24,8 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      <AnagramRiftModal />
+      <ToastContainer />
       {/* Test hooks, always present */}
       <div style={{position:'absolute',left:-9999,top:-9999}} aria-hidden data-testid="phase">{phase}</div>
       <div style={{position:'absolute',left:-9999,top:-9999}} aria-hidden data-testid="currentPlayerIndex">{currentPlayerIndex}</div>
@@ -39,7 +44,10 @@ export default function App() {
             <div className="players">
               {players.map((p, i) => (
                 <div key={p.id} className={"player" + (i === currentPlayerIndex ? ' active' : '')}>
-                  <div className="name">{p.name}</div>
+                  <div className="name">
+                    {p.name}
+                    <ElementStatusUI status={p.elementStatus} />
+                  </div>
                   <div className="scores">
                     <span>${p.roundBank}</span>
                     <span className="total">Total: ${p.totalBank}</span>

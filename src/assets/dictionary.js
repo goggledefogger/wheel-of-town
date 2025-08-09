@@ -1,0 +1,32 @@
+// A small, sample dictionary for the Anagram Rift mini-game.
+// In a real application, this would be a much larger, more efficient data structure like a Trie or a Set from a large word list.
+export const DICTIONARY = new Set([
+  'ace', 'act', 'add', 'age', 'ago', 'aid', 'aim', 'air', 'ale', 'all', 'and', 'ant', 'any', 'ape', 'app', 'arc', 'are', 'art', 'ash', 'ask', 'ate',
+  'bad', 'bag', 'ban', 'bat', 'bed', 'bee', 'beg', 'bet', 'bid', 'big', 'bin', 'bit', 'bow', 'box', 'boy', 'bud', 'bug', 'bun', 'bus', 'but', 'buy',
+  'cab', 'can', 'cap', 'car', 'cat', 'chi', 'cog', 'con', 'cop', 'cot', 'cow', 'cry', 'cub', 'cud', 'cup', 'cut',
+  'dad', 'dam', 'day', 'den', 'did', 'die', 'dig', 'dim', 'dip', 'doc', 'doe', 'dog', 'don', 'dot', 'dry', 'dub', 'dud', 'dug', 'dun', 'duo',
+  'ear', 'eat', 'eel', 'egg', 'ego', 'elf', 'elk', 'elm', 'end', 'eon', 'era', 'erg', 'eta',
+  'fad', 'fan', 'far', 'fat', 'fed', 'fee', 'fen', 'few', 'fig', 'fin', 'fir', 'fit', 'fix', 'flu', 'fly', 'foe', 'fog', 'for', 'fox', 'fry', 'fun', 'fur',
+  'gag', 'gal', 'gap', 'gas', 'gel', 'gem', 'get', 'gig', 'gin', 'god', 'got', 'gum', 'gun', 'gut', 'guy',
+  'had', 'hag', 'ham', 'has', 'hat', 'hay', 'hen', 'her', 'hey', 'hid', 'him', 'hip', 'his', 'hit', 'hog', 'hop', 'hot', 'how', 'hub', 'hug', 'hum', 'hun', 'hut',
+  'ice', 'icy', 'igg', 'ill', 'imp', 'ink', 'inn', 'ion', 'ire', 'irk', 'its',
+  'jar', 'jaw', 'jay', 'jet', 'jew', 'jig', 'job', 'jog', 'jot', 'joy', 'jug', 'jun', 'jut',
+  'keg', 'ken', 'key', 'kid', 'kin', 'kit',
+  'lab', 'lad', 'lag', 'lap', 'law', 'lay', 'led', 'lee', 'leg', 'let', 'lid', 'lie', 'lip', 'lit', 'log', 'lot', 'low', 'lug',
+  'mad', 'man', 'map', 'mat', 'may', 'men', 'met', 'mid', 'mix', 'mob', 'mod', 'mom', 'mop', 'mud', 'mug', 'mum',
+  'nab', 'nag', 'nap', 'nay', 'net', 'new', 'nib', 'nil', 'nip', 'nit', 'nix', 'nob', 'nod', 'non', 'nor', 'not', 'now', 'nun', 'nut',
+  'oaf', 'oak', 'oar', 'oat', 'odd', 'ode', 'off', 'oft', 'oil', 'old', 'one', 'opt', 'orb', 'ore', 'our', 'out', 'owe', 'own',
+  'pad', 'pal', 'pan', 'pap', 'par', 'pat', 'paw', 'pay', 'pea', 'peg', 'pen', 'pep', 'per', 'pet', 'pew', 'phi', 'pie', 'pig', 'pin', 'pip', 'pit', 'ply', 'pod', 'poi', 'pop', 'pot', 'pro', 'psi', 'pub', 'pug', 'pun', 'pup', 'put',
+  'qua', 'quit', 'quiz',
+  'rag', 'ram', 'ran', 'rap', 'rat', 'raw', 'ray', 'red', 'ref', 'rep', 'rev', 'rib', 'rid', 'rig', 'rim', 'rip', 'rob', 'rod', 'roe', 'rot', 'row', 'rub', 'rue', 'rug', 'rum', 'run', 'rut', 'rye',
+  'sad', 'sag', 'sap', 'sat', 'saw', 'say', 'sea', 'sec', 'see', 'set', 'sew', 'she', 'shy', 'sin', 'sip', 'sir', 'sit', 'six', 'ski', 'sky', 'sly', 'sob', 'sod', 'sol', 'son', 'sow', 'soy', 'spa', 'spy', 'sty', 'sub', 'sue', 'sum', 'sun', 'sup',
+  'tab', 'tad', 'tag', 'tan', 'tap', 'tar', 'tea', 'ted', 'tee', 'ten', 'the', 'tic', 'tie', 'tin', 'tip', 'toe', 'tog', 'tom', 'ton', 'top', 'tow', 'toy', 'try', 'tub', 'tug', 'tum', 'tun', 'two',
+  'ugh', 'ump', 'urn', 'use',
+  'van', 'vat', 'vet', 'vie',
+  'wad', 'wag', 'war', 'was', 'wax', 'way', 'web', 'wed', 'wee', 'wet', 'who', 'why', 'wig', 'win', 'wit', 'woe', 'won', 'wow',
+  'yak', 'yam', 'yap', 'yar', 'yaw', 'yea', 'yen', 'yep', 'yes', 'yet', 'yip', 'you',
+  'zag', 'zap', 'zig', 'zip', 'zoo',
+  'apple', 'baker', 'candy', 'delta', 'extra', 'fever', 'grape', 'hotel', 'igloo', 'joker', 'karma', 'lemon', 'mango',
+  'nectar', 'ocean', 'piano', 'queen', 'robot', 'salsa', 'tiger', 'ultra', 'viper', 'whale', 'xenon', 'yacht', 'zebra',
+  'puzzle', 'wheel', 'phrase', 'player', 'solve', 'vowel', 'guess', 'board', 'round', 'prize', 'money'
+]);

@@ -1,12 +1,12 @@
 {
-  "createdAt": "2025-08-09T21:49:33.563Z",
+  "createdAt": "2025-08-09T22:19:34.428Z",
   "artifacts": [
     "/app/tests/artifacts/wheel-page.png",
     "/app/tests/artifacts/wheel-canvas.png",
     "/app/tests/artifacts/wheel-zoom-canvas.png"
   ],
   "metrics": {
-    "avgWidthRatio": 1.7316296722212565,
-    "avgHeightRadius": 0.3635527774676572
+    "avgWidthRatio": 1.7362592921235285,
+    "avgHeightRadius": 0.3636804310634077
   }
 }
