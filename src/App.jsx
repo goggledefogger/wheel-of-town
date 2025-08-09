@@ -8,6 +8,11 @@ import HostDialogue from './components/Hosts/HostDialogue.jsx';
 import RoundSummary from './components/Summary/RoundSummary.jsx';
 import GameSummary from './components/Summary/GameSummary.jsx';
 
+// Expose store for e2e tests
+if (typeof window !== 'undefined') {
+  window.useGameStore = useGameStore;
+}
+
 export default function App() {
   const phase = useGameStore(s => s.phase);
   const players = useGameStore(s => s.players);

@@ -16,7 +16,7 @@ export default function RoundSummary() {
   }, []);
 
   return (
-    <div className="round-summary">
+    <div className="round-summary" data-testid="round-summary">
       <div ref={confettiRef} className="confetti" aria-hidden="true"></div>
       <h2>Round Complete</h2>
       <ul>
@@ -24,7 +24,7 @@ export default function RoundSummary() {
           <li key={p.id}>{p.name}: Round ${p.roundBank} — Total ${p.totalBank}</li>
         ))}
       </ul>
-      <button onClick={actions.nextRound}>Next Round</button>
+      <button onClick={actions.nextRound}>Continue</button>
     </div>
   );
 }

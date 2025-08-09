@@ -17,7 +17,7 @@ export default function GameSummary() {
   }, []);
 
   return (
-    <div className="game-summary round-summary">
+    <div className="game-summary round-summary" data-testid="game-summary">
       <div ref={confettiRef} className="confetti" aria-hidden="true"></div>
       <h2>Game Over</h2>
       <div>Winner: {winner?.name}</div>
