@@ -5,21 +5,37 @@ function SolveModal({ open, onSubmit, onCancel }) {
   const phrase = useGameStore(s => s.board.phrase);
   const revealed = useGameStore(s => s.board.revealed);
   const chars = phrase.split('');
-  const [value, setValue] = useState(chars.map(ch => (/[A-Z]/.test(ch) && revealed.has(ch) ? ch : '')).join(''));
+  const [value, setValue] = useState(chars.map(ch => (/[A-Z]/.test(ch) && revealed.has(ch) ? ch : ' ')).join(''));
   const [error, setError] = useState('');
   const inputRefs = useRef([]);
+
+  // Focus first input on open
   useEffect(() => {
-    if (open && inputRefs.current[0]) inputRefs.current[0].focus();
+    if (open) {
+      const firstInput = inputRefs.current.find(ref => ref && !ref.readOnly);
+      if (firstInput) firstInput.focus();
+    }
   }, [open]);
+
   if (!open) return null;
 
   // Helper to update value for a specific index
   const handleInput = (idx, v) => {
-    if (!/[A-Z ]?/.test(v)) return;
+    if (!/^[A-Z]?$/.test(v)) return; // Only allow letters
     const arr = value.split('');
     arr[idx] = v.toUpperCase();
     setValue(arr.join(''));
     setError('');
+
+    // Auto-tab to next non-disabled input
+    if (v) {
+      for (let i = idx + 1; i < chars.length; i++) {
+        if (inputRefs.current[i] && !inputRefs.current[i].readOnly) {
+          inputRefs.current[i].focus();
+          break;
+        }
+      }
+    }
   };
 
   // Submit handler
@@ -29,9 +45,42 @@ function SolveModal({ open, onSubmit, onCancel }) {
     else onSubmit(guess);
   };
 
+  // Keydown handler for backspace and navigation
+  const handleKeyDown = (e, idx) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    } else if (e.key === 'Escape') {
+      onCancel();
+    } else if (e.key === 'ArrowLeft') {
+      for (let i = idx - 1; i >= 0; i--) {
+        if (inputRefs.current[i] && !inputRefs.current[i].readOnly) {
+          inputRefs.current[i].focus();
+          break;
+        }
+      }
+    } else if (e.key === 'ArrowRight') {
+      for (let i = idx + 1; i < chars.length; i++) {
+        if (inputRefs.current[i] && !inputRefs.current[i].readOnly) {
+          inputRefs.current[i].focus();
+          break;
+        }
+      }
+    } else if (e.key === 'Backspace' && value[idx] === ' ') {
+      for (let i = idx - 1; i >= 0; i--) {
+        if (inputRefs.current[i] && !inputRefs.current[i].readOnly) {
+          const arr = value.split('');
+          arr[i] = ' ';
+          setValue(arr.join(''));
+          inputRefs.current[i].focus();
+          break;
+        }
+      }
+    }
+  };
+
   return (
-    <div className="modal-overlay" tabIndex={-1}>
-      <div className="modal solve-modal" role="dialog" aria-modal="true" aria-label="Solve the puzzle">
+    <div className="modal-overlay" tabIndex={-1} onClick={onCancel}>
+      <div className="modal solve-modal" role="dialog" aria-modal="true" aria-label="Solve the puzzle" onClick={e => e.stopPropagation()}>
         <h2>Solve the Puzzle</h2>
         <p>Type your solution below. Revealed letters are locked.</p>
         <div className="solve-board-grid">
@@ -40,6 +89,8 @@ function SolveModal({ open, onSubmit, onCancel }) {
             const isSpace = ch === ' ';
             const isPunct = !isLetter && !isSpace;
             const revealedLetter = isLetter && revealed.has(ch);
+            const isEditable = isLetter && !revealedLetter;
+
             return (
               <input
                 key={idx}
@@ -52,18 +103,25 @@ function SolveModal({ open, onSubmit, onCancel }) {
                 }
                 type="text"
                 maxLength={1}
-                value={revealedLetter ? ch : value[idx] || ''}
-                readOnly={revealedLetter || isSpace || isPunct}
-                tabIndex={isSpace || isPunct ? -1 : 0}
-                aria-label={isSpace ? 'space' : isPunct ? `punct ${ch}` : revealedLetter ? `revealed ${ch}` : 'letter'}
+                value={value[idx] === ' ' ? '' : value[idx]}
+                readOnly={!isEditable}
+                tabIndex={isEditable ? 0 : -1}
+                aria-label={isSpace ? 'space' : isPunct ? `punct ${ch}` : revealedLetter ? `revealed ${ch}` : `letter ${idx+1}`}
                 onChange={e => handleInput(idx, e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') handleSubmit();
-                  else if (e.key === 'Escape') onCancel();
-                  else if (e.key === 'ArrowLeft' && idx > 0) inputRefs.current[idx-1]?.focus();
-                  else if (e.key === 'ArrowRight' && idx < chars.length-1) inputRefs.current[idx+1]?.focus();
+                onKeyDown={e => handleKeyDown(e, idx)}
+                style={{
+                  width: 36,
+                  height: 48,
+                  textAlign: 'center',
+                  margin: 2,
+                  fontSize: '1.25em',
+                  fontFamily: 'Merriweather, Georgia, serif',
+                  backgroundColor: isEditable ? 'white' : 'lightgray',
+                  color: 'black',
+                  border: isEditable ? '1px solid #ccc' : '1px solid transparent',
+                  borderRadius: 4,
+                  cursor: isEditable ? 'text' : 'default'
                 }}
-                style={{ width: 36, height: 48, textAlign: 'center', margin: 2, fontSize: '1.25em', fontFamily: 'Merriweather, Georgia, serif' }}
               />
             );
           })}
