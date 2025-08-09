@@ -2,7 +2,7 @@
 
 :root { color-scheme: dark; }
 * { box-sizing: border-box; }
-html, body, #root { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+html, body, #root { height: 100%; margin: 0; font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
 .app-shell { height: 100%; display: flex; flex-direction: column; background: var(--color-bg); }
 .title-screen { flex: 1; display: grid; place-items: center; gap: 24px; }
 .primary { padding: 12px 20px; font-size: 18px; border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
@@ -98,6 +98,155 @@ canvas { max-width: 100%; height: auto; border: 1.5px solid var(--color-border);
 /* Subtle transitions for interactive elements */
 .button, .player, .tile, .panel, .host-bubble {
   transition: box-shadow 0.2s, border 0.2s, background 0.2s, color 0.2s;
+}
+
+/* Animated, lively title */
+.title-screen h1 {
+  font-size: 2.8em;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--color-accent);
+  text-shadow: 0 2px 16px #ffd16655, 0 1px 0 #fff2;
+  animation: title-glow 2.5s ease-in-out infinite alternate;
+}
+@keyframes title-glow {
+  0% { text-shadow: 0 2px 16px #ffd16655, 0 1px 0 #fff2; }
+  100% { text-shadow: 0 4px 32px #ffd166aa, 0 2px 0 #fff4; }
+}
+
+/* Fun bounce on button/letter press */
+.button:active, .letter-grid button:active {
+  transform: scale(0.96);
+  box-shadow: 0 1px 2px #0002;
+}
+
+/* Spin button wiggle on hover */
+.button.primary:not(:disabled):hover {
+  animation: wiggle 0.18s linear 1;
+}
+@keyframes wiggle {
+  0% { transform: rotate(-2deg) scale(1.04); }
+  50% { transform: rotate(2deg) scale(1.08); }
+  100% { transform: rotate(0deg) scale(1.04); }
+}
+
+/* Host bubble pop-in animation */
+.host-bubble {
+  animation: host-pop 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+}
+@keyframes host-pop {
+  0% { transform: scale(0.92) translateY(10px); opacity: 0.2; }
+  80% { transform: scale(1.04) translateY(-2px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Confetti effect (for celebratory moments) */
+.confetti {
+  pointer-events: none;
+  position: fixed;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  z-index: 9999;
+  animation: confetti-fade 2.5s linear forwards;
+}
+@keyframes confetti-fade {
+  0% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* More whitespace and breathing room */
+.app-shell, .game-layout, .board-area, .players, .actions {
+  margin-bottom: 8px;
+}
+
+/* Slightly more rounded and soft panels */
+.panel, .host-bubble, .tile, .player, .board-tiles {
+  border-radius: 16px;
+}
+
+/* Smoother panel transitions */
+.panel, .host-bubble {
+  transition: box-shadow 0.25s, border 0.25s, background 0.25s, color 0.25s, transform 0.18s;
+}
+
+/* Make summary screens more festive */
+.round-summary, .game-summary {
+  background: linear-gradient(120deg, #ffd16622 0%, #06b6d422 100%);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px #0002;
+  padding: 32px 24px;
+  margin: 32px auto;
+  max-width: 420px;
+  text-align: center;
+  animation: pop-in 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+}
+@keyframes pop-in {
+  0% { transform: scale(0.92) translateY(30px); opacity: 0.2; }
+  80% { transform: scale(1.04) translateY(-4px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Headings and labels: classic serif for contrast */
+h1, h2, h3, .label, .name, .host-bubble, .scores, .tile, .board-tiles, .player {
+  font-family: 'Merriweather', Georgia, serif;
+  letter-spacing: 0.5px;
+}
+
+/* Category label on board */
+.board > div:first-child {
+  font-family: 'Merriweather', Georgia, serif;
+  font-size: 1.08em;
+  font-weight: 700;
+  color: var(--color-accent-2);
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  opacity: 0.92;
+}
+
+/* Host name label */
+.host-area > div:first-child, .host-bubble > div:first-child {
+  font-family: 'Merriweather', Georgia, serif;
+  font-size: 1.1em;
+  font-weight: 900;
+  color: var(--color-accent);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+/* Button text: Inter, bold, slightly larger */
+.button, .letter-grid button {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-weight: 700;
+  font-size: 1.13em;
+  letter-spacing: 0.5px;
+}
+
+/* Player name: serif, bold, accent color for active */
+.player .name {
+  font-family: 'Merriweather', Georgia, serif;
+  font-weight: 900;
+  color: var(--color-text);
+  font-size: 1.18em;
+  letter-spacing: 1px;
+}
+.player.active .name {
+  color: var(--color-accent);
+}
+
+/* Tile text: serif, bold */
+.tile {
+  font-family: 'Merriweather', Georgia, serif;
+  font-weight: 900;
+  font-size: 1.28em;
+  letter-spacing: 1.2px;
+}
+
+/* Host bubble: slightly larger, classic */
+.host-bubble {
+  font-family: 'Merriweather', Georgia, serif;
+  font-size: 1.13em;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 @media (max-width: 1100px) {

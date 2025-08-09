@@ -10,6 +10,7 @@ function createTextLabelMesh(text, options = {}) {
     maxWidth = 0.3,
     maxHeight = 0.12,
     arcLength = 0.2,
+    fontFamily = "'Merriweather', Georgia, serif"
   } = options;
 
   // Helper function to measure text width
@@ -24,15 +25,12 @@ function createTextLabelMesh(text, options = {}) {
   function wrapText(text, maxWidth, fontSize) {
     const words = text.split(' ');
     if (words.length === 1) return [text]; // Single word, don't wrap
-
     const lines = [];
     let currentLine = '';
-    const font = `bold ${fontSize}px Arial, sans-serif`;
-
+    const font = `bold ${fontSize}px ${fontFamily}`;
     for (const word of words) {
       const testLine = currentLine ? `${currentLine} ${word}` : word;
       const testWidth = measureText(testLine, font);
-
       if (testWidth <= maxWidth && currentLine) {
         currentLine = testLine;
       } else {
@@ -41,7 +39,6 @@ function createTextLabelMesh(text, options = {}) {
       }
     }
     if (currentLine) lines.push(currentLine);
-
     return lines;
   }
 
@@ -50,12 +47,10 @@ function createTextLabelMesh(text, options = {}) {
     let fontSize = 24;
     let lines = [text];
     let totalHeight;
-
     // Find the largest font size that fits
     for (let size = 24; size >= 12; size -= 1) {
-      const font = `bold ${size}px Arial, sans-serif`;
+      const font = `bold ${size}px ${fontFamily}`;
       const singleLineWidth = measureText(text, font);
-
       // Try single line first
       if (singleLineWidth <= availableWidth) {
         fontSize = size;
@@ -63,18 +58,15 @@ function createTextLabelMesh(text, options = {}) {
         totalHeight = size;
         break;
       }
-
       // Try multi-line if single line doesn't fit
       const testLines = wrapText(text, availableWidth, size);
       const lineHeight = size * 1.1; // 10% line spacing
       const testTotalHeight = testLines.length * lineHeight;
-
       if (testTotalHeight <= availableHeight) {
         // Check if all lines fit within width
         const allLinesFit = testLines.every(line =>
           measureText(line, font) <= availableWidth
         );
-
         if (allLinesFit) {
           fontSize = size;
           lines = testLines;
@@ -83,20 +75,17 @@ function createTextLabelMesh(text, options = {}) {
         }
       }
     }
-
     return { fontSize, lines, totalHeight };
   }
 
   // Calculate available space (make it proportional to arc length)
   const availableWidth = Math.max(120, Math.min(250, arcLength * 400));
   const availableHeight = Math.max(40, Math.min(80, maxHeight * 400));
-
   const layout = calculateOptimalLayout(text, availableWidth, availableHeight);
 
   // Create canvas with appropriate size
   const canvasWidth = availableWidth + 20; // padding
   const canvasHeight = Math.max(60, layout.totalHeight + 20); // padding
-
   const canvas = document.createElement('canvas');
   canvas.width = canvasWidth;
   canvas.height = canvasHeight;
@@ -104,22 +93,19 @@ function createTextLabelMesh(text, options = {}) {
 
   // Set up text rendering
   ctx.fillStyle = color;
-  ctx.font = `bold ${layout.fontSize}px Arial, sans-serif`;
+  ctx.font = `bold ${layout.fontSize}px ${fontFamily}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
   // Draw each line
   const lineHeight = layout.fontSize * 1.1;
   const startY = canvasHeight / 2 - ((layout.lines.length - 1) * lineHeight) / 2;
-
   layout.lines.forEach((line, index) => {
     const y = startY + (index * lineHeight);
-
     // Black outline for readability
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = Math.max(2, layout.fontSize / 10);
     ctx.strokeText(line, canvasWidth / 2, y);
-
     // White text fill
     ctx.fillText(line, canvasWidth / 2, y);
   });
@@ -202,11 +188,25 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
 
     const wedgesData = useGameStore.getState().wheel.wedges || [];
     const wedgeCount = wedgesData.length || DEFAULT_WEDGE_COUNT;
-    const colors = [0xe53935, 0x8e24aa, 0x3949ab, 0x1e88e5, 0x00897b, 0x43a047, 0xfdd835, 0xfb8c00, 0x6d4c41];
+    // Classic, harmonious wedge colors
+    const colors = [
+      0xc44536, // brick red
+      0x6a994e, // olive green
+      0x386641, // deep green
+      0xf2e8cf, // cream
+      0x9c6644, // brown
+      0x3a5a40, // forest
+      0x264653, // blue slate
+      0x8ab17d, // sage
+      0xe9c46a, // gold
+      0x7b6d8d, // muted purple
+      0x4f5d75, // blue gray
+      0xf4a261, // sand
+    ];
     const colorFor = (i) => {
       const w = wedgesData[i];
-      if (w?.type === 'Bankrupt') return 0x000000;
-      if (w?.type === 'LoseTurn') return 0x5a5a5a;
+      if (w?.type === 'Bankrupt') return 0x222222;
+      if (w?.type === 'LoseTurn') return 0x888888;
       return colors[i % colors.length];
     };
 
@@ -215,34 +215,42 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
       const angleEnd = ((i + 1) / wedgeCount) * Math.PI * 2;
       const shape = new THREE.Shape();
       shape.moveTo(0, 0);
-      const steps = 12;
+      const steps = 16;
       for (let s = 0; s <= steps; s++) {
         const t = angleStart + (s / steps) * (angleEnd - angleStart);
         shape.lineTo(Math.cos(t) * radius, Math.sin(t) * radius);
       }
       shape.lineTo(0, 0);
       const extrude = new THREE.ExtrudeGeometry(shape, { depth: 0.06, bevelEnabled: false });
-      const mat = new THREE.MeshStandardMaterial({ color: colorFor(i), roughness: 0.6 });
+      // Add a subtle radial highlight using MeshStandardMaterial with a custom color
+      const baseColor = colorFor(i);
+      const mat = new THREE.MeshStandardMaterial({ color: baseColor, roughness: 0.45, metalness: 0.18 });
       const mesh = new THREE.Mesh(extrude, mat);
-      // Sits in XY plane; lift slightly to avoid z-fighting
       mesh.position.z = 0.01;
       wedgeGroup.add(mesh);
     }
 
-    // Rim disc (thin ring) for nicer look
-    const ringGeo = new THREE.RingGeometry(radius * 0.96, radius, 64);
-    const ringMat = new THREE.MeshStandardMaterial({ color: 0x222833, side: THREE.DoubleSide });
+    // Softer rim disc (thin ring) for a classic look
+    const ringGeo = new THREE.RingGeometry(radius * 0.96, radius, 96);
+    const ringMat = new THREE.MeshStandardMaterial({ color: 0xe9c46a, side: THREE.DoubleSide, metalness: 0.3, roughness: 0.3 });
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.position.z = 0.04;
     wheelGroup.add(ring);
 
-    // Pointer at 12 o'clock (+Y), in front of wheel
-    const pointerGeo = new THREE.ConeGeometry(0.06, 0.16, 12);
-    const pointerMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.2, roughness: 0.4 });
+    // Pointer at 12 o'clock (+Y), in front of wheel, with gold accent
+    const pointerGeo = new THREE.ConeGeometry(0.06, 0.16, 16);
+    const pointerMat = new THREE.MeshStandardMaterial({ color: 0xffd166, metalness: 0.5, roughness: 0.2 });
     const pointer = new THREE.Mesh(pointerGeo, pointerMat);
     pointer.rotation.x = Math.PI; // point down onto wheel
     pointer.position.set(0, radius + 0.08, 0.2);
     scene.add(pointer);
+
+    // Add a gentle shadow under the wheel for depth
+    const shadowGeo = new THREE.CircleGeometry(radius * 0.92, 64);
+    const shadowMat = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.18, transparent: true });
+    const shadow = new THREE.Mesh(shadowGeo, shadowMat);
+    shadow.position.z = -0.04;
+    wheelGroup.add(shadow);
 
     // Text labels for wedges (no background boxes, natural orientation)
     const labelsGroup = new THREE.Group();
@@ -254,13 +262,13 @@ export default function WheelStage3D({ spinToken, onSpinEnd }) {
       const mesh = createTextLabelMesh(label, {
         maxWidth: radius * 0.4, // Max width based on radius
         maxHeight: radius * 0.2, // Max height based on radius
-        arcLength: arcLen // Pass arc length for dynamic sizing
+        arcLength: arcLen, // Pass arc length for dynamic sizing
+        fontFamily: "'Merriweather', Georgia, serif"
       });
       const theta = ((i + 0.5) / wedgeCount) * Math.PI * 2;
       // Position text closer to the rim for better visibility, but still within the wedge
       const labelRadius = radius * 0.8;
       mesh.position.set(Math.cos(theta) * labelRadius, Math.sin(theta) * labelRadius, 0.12);
-
       // Improved rotation logic for better readability
       let rot = theta;
       // Keep text readable by rotating text that would be upside down
