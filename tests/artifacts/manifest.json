@@ -1,9 +1,9 @@
 {
-  "createdAt": "2025-08-09T20:27:05.764Z",
+  "createdAt": "2025-08-09T21:49:33.563Z",
   "artifacts": [
-    "/workspace/tests/artifacts/wheel-page.png",
-    "/workspace/tests/artifacts/wheel-canvas.png",
-    "/workspace/tests/artifacts/wheel-zoom-canvas.png"
+    "/app/tests/artifacts/wheel-page.png",
+    "/app/tests/artifacts/wheel-canvas.png",
+    "/app/tests/artifacts/wheel-zoom-canvas.png"
   ],
   "metrics": {
     "avgWidthRatio": 1.7316296722212565,
