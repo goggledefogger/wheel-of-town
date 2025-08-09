@@ -141,6 +141,10 @@ Derived selectors compute:
 - Memoize heavy components; use CSS transforms for HUD animations
 - Limit scene complexity; use flat materials and few lights
 
+## Accessibility & Feedback
+- Improved focus, aria, and keyboard support for all actions and modals
+- Confetti and celebratory effects for round/game win
+
 ## Build & Run
 - Dev: `vite` local server
 - Build: `vite build` outputs static assets

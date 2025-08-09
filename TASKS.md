@@ -11,6 +11,11 @@
 - [ ] Sound cues (spin ticks, correct/wrong, bankrupt)
 - [ ] High-contrast toggle in settings
 - [ ] Keyboard controls for letters and actions
+- [x] Modern modal for Solve with board-style input
+- [x] Classic, harmonious wheel graphics (palette, rim, pointer, shadow)
+- [x] Typography and design polish (Inter & Merriweather)
+- [x] Confetti and celebratory effects
+- [x] Improved accessibility and keyboard navigation
 
 ## Near-Term
 - [ ] Refine wheel visuals (labels on wedges, cash text overlay)
@@ -35,6 +40,6 @@
 - [ ] Unit tests for engine and AI heuristics
 
 ## Changelog
-- v0.1.0: Initial scaffolding with MVP gameplay loop (spin, guess, buy vowel, solve), simple AI, host dialogues.
+- v0.2.0: Major UI/UX overhaul, classic wheel graphics, board-style solve modal, typography, confetti, accessibility
 
 

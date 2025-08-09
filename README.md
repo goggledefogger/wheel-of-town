@@ -12,11 +12,11 @@ Spin the wheel, guess letters, buy vowels, and solve the puzzle before an oppone
 The wheel might be kind, it might be cruel.
 
 **Highlights:**
-• 3D spinning wheel with satisfying physics
-• Two AI opponents with distinct strategies
-• Hosted by Pat and Vanna Roy
-• Playable with keyboard or mouse
-• Accessibility features so everyone gets a fair shot
+• 3D spinning wheel with satisfying physics and a classic, harmonious color palette
+• Modern, lively, and classic UI/UX with improved typography (Inter & Merriweather)
+• Solve action uses a modal with a board-style input grid, not a prompt
+• Confetti and celebratory effects for round/game win
+• Accessibility and keyboard navigation improved
 
 ## 🚀 Quick Start
 
@@ -64,6 +64,13 @@ npx playwright test tests/spin-and-zoom.spec.js
 ## 📝 Development Status
 
 MVP complete. Core gameplay works.
+Recent improvements:
+- UI/UX overhaul: modern, lively, and classic design touches
+- Wheel graphics: classic palette, gold rim, pointer, and shadow
+- Solve action: modal with board-like input grid
+- Typography: Inter and Merriweather for a more natural, readable look
+- Confetti and animations for round/game win
+- Accessibility and keyboard navigation improved
 See `TASKS.md` for upcoming features and `PRD.md` for the full plan.
 
 Working now: spinning, guessing, solving, AI opponents, basic accessibility

@@ -22,8 +22,8 @@ Desktop-first experience with a 3D stage and wheel, a puzzle board, player panel
 1. Start → Settings (optional) → Start Game → Round 1
 2. During own turn: Spin → Wheel settles → Consonant selection → Earn or next player
 3. Buy Vowel → Deduct $250 → Reveal if present → Continue turn
-4. Solve → Enter phrase → Validate → If correct, round end; else turn passes
-5. AI turns: automatic actions with brief delays and dialogue
+5. Solve → Enter phrase in modal board-style input → Validate → If correct, round end; else turn passes
+6. AI turns: automatic actions with brief delays and dialogue
 
 ## Interaction & Controls
 - Spin: mouse drag on wheel (angular velocity based on drag) or click Spin button (randomized force within range)
@@ -33,12 +33,14 @@ Desktop-first experience with a 3D stage and wheel, a puzzle board, player panel
 
 ## Visual Design
 - Stage: dark-blue studio gradient background with subtle spotlight glow
-- Wheel: bright, color-rotated wedges with legible labels; pointer at 12 o’clock
-  - Status: Wheel faces user on XY plane; spins around Z; labels pending
+- Wheel: classic, harmonious palette; gold rim and pointer; subtle shadow and 3D/metallic effects
 - Decel zoom: during slow-down and for ~1s after stop, a zoomed overlay appears bottom-right to make the landing wedge easier to see; hides on next spin
 - Puzzle board: green “reveal” tiles; spaces transparent; punctuation subtle blue
 - Hosts: stylized characters (flat-shaded avatars) with idle/gesture animations
 - Color palette: homage to classic show (gold accents, green board) + a11y safe
+- Solve modal: board-style input grid, revealed letters locked, matches puzzle layout
+- Typography: Inter for UI, Merriweather for headings/labels
+- Confetti and celebratory effects for round/game win
 
 ## Sound Design
 - SFX: spin whoosh, wedge ticks, correct chime, wrong buzzer, bankrupt sting, audience cheer
@@ -80,7 +82,7 @@ Wheel state:
 - Personalities tweak risk tolerance and spin vs solve bias
 
 ## Accessibility
-- Keyboard-only play supported
+- Improved focus, aria, and keyboard support for all actions and modals
 - Aria labels and live regions for turn and outcome announcements
 - High-contrast mode; color-blind friendly wedges
 - Avoid motion sickness: reduced motion setting disables big camera sweeps

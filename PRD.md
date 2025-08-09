@@ -8,10 +8,14 @@ The experience aims to be authentic, accessible, and performant on modern deskto
 ## Goals
 - Deliver a fun, replayable single-session game of Wheel Of Town with:
   - One human player, two AI players
-  - A 3D spinning wheel with realistic physics feel
+  - A 3D spinning wheel with realistic physics feel and classic, harmonious color palette
   - Category-based puzzles, letter guessing, vowel buying, and solving
   - Pat as announcer/host; Vanna reveals letters on the board
   - Round scoring, Bankrupt/Lose a Turn wedges, per-round winner accumulation
+  - Modern, lively, and classic UI/UX with improved typography (Inter & Merriweather)
+  - Solve action uses a modal with a board-style input grid, not a prompt
+  - Confetti and celebratory effects for round/game win
+  - Accessibility and keyboard navigation improved
 - Fast local setup and smooth 60 FPS experience on mainstream laptops
 - Strong UX with keyboard and mouse controls and basic accessibility
 
@@ -102,10 +106,13 @@ Notes:
   - Escape: cancel dialogs
 
 ### Audio/Visual
-- Wheel spin sound, click ticks, success/fail stings, audience cheer
-- Subtle stage lighting; camera moves for spin and reveal moments
+- Wheel: classic palette, gold rim, pointer, shadow, subtle 3D/metallic effects
+- Solve: modal dialog with board-style input grid, revealed letters locked, matches puzzle layout
+- Typography: Inter for UI, Merriweather for headings/labels
+- Confetti and celebratory effects for round/game win
 
 ### Accessibility
+- Improved focus, aria, and keyboard support for all actions and modals
 - High-contrast mode toggle
 - Color-blind safe palette for wedges
 - Full keyboard operability
