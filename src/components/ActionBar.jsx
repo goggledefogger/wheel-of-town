@@ -22,7 +22,7 @@ function SolveModal({ open, onSubmit, onCancel }) {
 
   // Helper to update value for a specific index
   const handleInput = (idx, v) => {
-    if (!/^[A-Z]?$/.test(v)) return;
+    if (!/^[a-zA-Z]?$/.test(v)) return;
     const newValues = [...values];
     newValues[idx] = v.toUpperCase() || null;
     setValues(newValues);
