@@ -5,74 +5,65 @@ function SolveModal({ open, onSubmit, onCancel }) {
   const phrase = useGameStore(s => s.board.phrase);
   const revealed = useGameStore(s => s.board.revealed);
   const chars = phrase.split('');
-  const [value, setValue] = useState(chars.map(ch => (/[A-Z]/.test(ch) && revealed.has(ch) ? ch : ' ')).join(''));
+  const [values, setValues] = useState([]);
   const [error, setError] = useState('');
   const inputRefs = useRef([]);
 
-  // Focus first input on open
+  // Initialize values on open
   useEffect(() => {
     if (open) {
+      setValues(chars.map(ch => (/[A-Z]/.test(ch) && revealed.has(ch) ? ch : null)));
       const firstInput = inputRefs.current.find(ref => ref && !ref.readOnly);
       if (firstInput) firstInput.focus();
     }
-  }, [open]);
+  }, [open, phrase, revealed]);
 
   if (!open) return null;
 
   // Helper to update value for a specific index
   const handleInput = (idx, v) => {
-    if (!/^[A-Z]?$/.test(v)) return; // Only allow letters
-    const arr = value.split('');
-    arr[idx] = v.toUpperCase();
-    setValue(arr.join(''));
+    if (!/^[A-Z]?$/.test(v)) return;
+    const newValues = [...values];
+    newValues[idx] = v.toUpperCase() || null;
+    setValues(newValues);
     setError('');
 
-    // Auto-tab to next non-disabled input
-    if (v) {
-      for (let i = idx + 1; i < chars.length; i++) {
-        if (inputRefs.current[i] && !inputRefs.current[i].readOnly) {
-          inputRefs.current[i].focus();
-          break;
-        }
-      }
+    if (v) { // Auto-tab to next non-disabled input
+      const nextInput = inputRefs.current.slice(idx + 1).find(ref => ref && !ref.readOnly);
+      if (nextInput) nextInput.focus();
     }
   };
 
   // Submit handler
   const handleSubmit = () => {
-    const guess = value.toUpperCase();
-    if (!guess.replace(/[^A-Z]/g, '').length) setError('Please enter a solution.');
+    const guess = chars.map((ch, i) => (values[i] || (/[A-Z]/.test(ch) ? ' ' : ch))).join('');
+    if (values.every(v => v === null)) setError('Please enter a solution.');
     else onSubmit(guess);
   };
 
   // Keydown handler for backspace and navigation
   const handleKeyDown = (e, idx) => {
-    if (e.key === 'Enter') {
-      handleSubmit();
-    } else if (e.key === 'Escape') {
-      onCancel();
-    } else if (e.key === 'ArrowLeft') {
-      for (let i = idx - 1; i >= 0; i--) {
-        if (inputRefs.current[i] && !inputRefs.current[i].readOnly) {
-          inputRefs.current[i].focus();
-          break;
-        }
-      }
+    if (e.key === 'Enter') handleSubmit();
+    else if (e.key === 'Escape') onCancel();
+    else if (e.key === 'ArrowLeft') {
+      const prevInput = inputRefs.current.slice(0, idx).reverse().find(ref => ref && !ref.readOnly);
+      if (prevInput) prevInput.focus();
     } else if (e.key === 'ArrowRight') {
-      for (let i = idx + 1; i < chars.length; i++) {
-        if (inputRefs.current[i] && !inputRefs.current[i].readOnly) {
-          inputRefs.current[i].focus();
-          break;
-        }
-      }
-    } else if (e.key === 'Backspace' && value[idx] === ' ') {
-      for (let i = idx - 1; i >= 0; i--) {
-        if (inputRefs.current[i] && !inputRefs.current[i].readOnly) {
-          const arr = value.split('');
-          arr[i] = ' ';
-          setValue(arr.join(''));
-          inputRefs.current[i].focus();
-          break;
+      const nextInput = inputRefs.current.slice(idx + 1).find(ref => ref && !ref.readOnly);
+      if (nextInput) nextInput.focus();
+    } else if (e.key === 'Backspace') {
+      if (values[idx]) {
+        const newValues = [...values];
+        newValues[idx] = null;
+        setValues(newValues);
+      } else {
+        const prevInput = inputRefs.current.slice(0, idx).reverse().find(ref => ref && !ref.readOnly);
+        if (prevInput) {
+          const prevIdx = inputRefs.current.indexOf(prevInput);
+          const newValues = [...values];
+          newValues[prevIdx] = null;
+          setValues(newValues);
+          prevInput.focus();
         }
       }
     }
@@ -103,7 +94,7 @@ function SolveModal({ open, onSubmit, onCancel }) {
                 }
                 type="text"
                 maxLength={1}
-                value={value[idx] === ' ' ? '' : value[idx]}
+                value={values[idx] || ''}
                 readOnly={!isEditable}
                 tabIndex={isEditable ? 0 : -1}
                 aria-label={isSpace ? 'space' : isPunct ? `punct ${ch}` : revealedLetter ? `revealed ${ch}` : `letter ${idx+1}`}
@@ -116,9 +107,9 @@ function SolveModal({ open, onSubmit, onCancel }) {
                   margin: 2,
                   fontSize: '1.25em',
                   fontFamily: 'Merriweather, Georgia, serif',
-                  backgroundColor: isEditable ? 'white' : 'lightgray',
-                  color: 'black',
-                  border: isEditable ? '1px solid #ccc' : '1px solid transparent',
+                  backgroundColor: isEditable ? 'white' : '#444',
+                  color: isPunct ? 'white' : 'black',
+                  border: isEditable ? '1px solid #ccc' : '1px solid #222',
                   borderRadius: 4,
                   cursor: isEditable ? 'text' : 'default'
                 }}
