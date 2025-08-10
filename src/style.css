@@ -78,7 +78,8 @@ html, body, #root { height: 100%; margin: 0; font-family: 'Inter', system-ui, -a
   border-color: #ffd166;
   box-shadow: 0 0 0 3px #ffd16655;
 }
-.board-tiles { display: grid; grid-template-columns: repeat(14, 46px); gap: 8px; justify-content: center; padding: var(--space-3) var(--space-4); border-radius: var(--radius); background: linear-gradient(180deg, #0a1527 0%, #0a1320 100%); box-shadow: var(--shadow-soft); }
+.board-tiles { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: var(--space-3) var(--space-4); border-radius: var(--radius); background: linear-gradient(180deg, #0a1527 0%, #0a1320 100%); box-shadow: var(--shadow-soft); }
+.word { display: flex; gap: 8px; }
 .tile { width: 46px; height: 60px; border: 2.5px solid var(--color-border); display: grid; place-items: center; border-radius: 8px; background: var(--color-tile); color: var(--color-text); font-weight: 900; letter-spacing: 1.2px; font-size: 1.25em; box-shadow: 0 1px 4px rgba(0,0,0,0.10); transition: background 0.2s, color 0.2s, border 0.2s; }
 .tile.revealed { background: var(--color-success); color: #061b0f; border-color: #2d8a58; }
 .tile.space { background: transparent; border-color: transparent; }
