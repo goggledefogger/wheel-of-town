@@ -154,10 +154,21 @@ export default function WheelStage3D({ spinToken, onSpinEnd, spinningHeld }) {
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(420, 420);
     renderer.domElement.className = 'wheel-canvas';
     renderer.domElement.setAttribute('data-testid', 'wheel');
     mount.appendChild(renderer.domElement);
+
+    const handleResize = () => {
+      const width = mount.clientWidth;
+      renderer.setSize(width, width);
+      camera.aspect = 1;
+      camera.updateProjectionMatrix();
+    };
+
+    handleResize(); // Initial size
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(mount);
 
     // Zoom renderer overlay
     const rendererZoom = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -382,6 +393,7 @@ export default function WheelStage3D({ spinToken, onSpinEnd, spinningHeld }) {
     animate();
 
     return () => {
+      resizeObserver.disconnect();
       cancelAnimationFrame(req);
       renderer.dispose();
       rendererZoom.dispose();
