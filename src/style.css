@@ -327,11 +327,20 @@ h1, h2, h3, .label, .name, .host-bubble, .scores, .tile, .board-tiles, .player {
   .host-area { display: none; }
 }
 @media (max-width: 800px) {
+  .player { min-width: 80px; padding: 8px 10px; }
+  .player .name { font-size: 0.9em; }
+  .player .scores { font-size: 0.8em; }
+  .players { justify-content: center; gap: 6px; }
+  .hud { padding: var(--space-4) 10px; }
+  .letter-grid { gap: 4px; }
+  .letter-grid button { width: 28px; height: 36px; font-size: 0.75em; }
   .stage { grid-template-columns: 1fr; padding: 8px; gap: 8px; }
   .board-area, .wheel-area { min-width: 0; }
   .wheel-area { margin-top: 16px; }
-  .board-tiles { grid-template-columns: repeat(7, 1fr); }
-  .letter-grid { grid-template-columns: repeat(7, 1fr); }
+  .board-tiles { gap: 4px; padding: var(--space-2) var(--space-3); }
+  .tile { width: 36px; height: 48px; font-size: 1em; }
+  .board > div:first-child { font-size: 0.95em; }
+  .letter-grid { grid-template-columns: repeat(8, 1fr); }
 }
 
 .solve-board-grid {
@@ -389,5 +398,3 @@ h1, h2, h3, .label, .name, .host-bubble, .scores, .tile, .board-tiles, .player {
   0% { box-shadow: 0 0 0 4px #ffd16688, 0 0 16px 4px #ffd16644; filter: brightness(1.05); }
   100% { box-shadow: 0 0 0 8px #ffd166cc, 0 0 32px 8px #ffd16688; filter: brightness(1.18); }
 }
-
-
