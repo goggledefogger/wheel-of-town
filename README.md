@@ -25,7 +25,7 @@ The wheel might be kind, it might be cruel.
 4. Solve the puzzle to win the round
 5. Try not to go bankrupt before the opponents do
 
-The cautious AI plays it safe. The aggressive AI doesn’t.
+Tiny Roy plays it safe. Big Roy doesn’t.
 
 ## 🏗️ Tech Behind the Town
 
@@ -38,9 +38,14 @@ Howler.js – Sound effects (coming soon)
 ## 🎪 The Town Roster
 
 **Pat Roy** – Loves a good pun, keeps the game moving, probably owns too many blazers
+
 **Vanna Roy** – Effortlessly reveals letters and has never missed a cue
-**AI Cautious** – Patient, careful, and annoyingly consistent
-**AI Aggressive** – Swings for the fences every time
+
+**Opponent: Tiny Roy** – Patient, careful, and annoyingly consistent
+
+**Opponent: Big Roy** – Swings for the fences every time
+
+**You: You** - What's your strategy, and why is it so bad?
 
 ## 🧪 Testing
 
