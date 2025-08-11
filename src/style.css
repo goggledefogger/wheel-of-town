@@ -328,6 +328,7 @@ h1, h2, h3, .label, .name, .host-bubble, .scores, .tile, .board-tiles, .player {
 }
 @media (max-width: 800px) {
   .stage { grid-template-columns: 1fr; padding: 8px; gap: 8px; }
+  .board-area, .wheel-area { min-width: 0; }
   .wheel-area { margin-top: 16px; }
   .board-tiles { grid-template-columns: repeat(7, 1fr); }
   .letter-grid { grid-template-columns: repeat(7, 1fr); }
