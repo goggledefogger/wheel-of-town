@@ -1,6 +1,6 @@
 # 🎪 Wheel of Town
 
-*"Welcome to Wheel of Town! Pat Roy and Vanna Roy got the puzzles, the prizes, and the occasional bankruptcy. Let's spin!*
+*"Welcome to Wheel of Town! Pat Roy and Vanna Roy bring the puzzles, the prizes, and the occasional bankruptcy. Let's spin!*
 
 ---
 
@@ -12,46 +12,10 @@ Spin the wheel, guess letters, buy vowels, and solve the puzzle before an oppone
 The wheel might be kind, it might be cruel.
 
 **Highlights:**
-• 3D spinning wheel with satisfying physics and a classic, harmonious color palette
-• Modern, lively, and classic UI/UX with improved typography (Inter & Merriweather)
-• Solve action uses a modal with a board-style input grid, not a prompt
+• 3D spinning wheel with satisfying physics and harmonious color palette
 • Confetti and celebratory effects for round/game win
-• Accessibility and keyboard navigation improved
+• Accessibility and keyboard navigation
 
-## 🧪 Testing
-
-Running tests with Playwright on macOS? If you encounter issues with Chromium, you can use WebKit as a reliable alternative:
-```bash
-npx playwright test --browser=webkit
-```
-*"Welcome to Wheel of Town! Pat Roy and Vanna Roy got the puzzles, the prizes, and the occasional bankruptcy. Let’s spin!*
-
----
-
-A browser-based word puzzle game where you face off against two opponents. Built with React and three.js, featuring a 3D wheel, letter board, and just enough chaos to keep things interesting.
-
-## 🎮 What’s the Deal?
-
-Spin the wheel, guess letters, buy vowels, and solve the puzzle before an opponent beats you to it.
-The wheel might be kind, it might be cruel.
-
-**Highlights:**
-• 3D spinning wheel with satisfying physics and a classic, harmonious color palette
-• Modern, lively, and classic UI/UX with improved typography (Inter & Merriweather)
-• Solve action uses a modal with a board-style input grid, not a prompt
-• Confetti and celebratory effects for round/game win
-• Accessibility and keyboard navigation improved
-
-## 🚀 Quick Start
-
-```bash
-git clone <your-repo-url>
-cd wheel-of-town
-npm install
-npm run dev
-```
-
-Then open `localhost:5173` in your browser and start spinning.
 
 ## 🎯 How to Play
 
@@ -85,25 +49,29 @@ npm run test:e2e
 npx playwright test tests/spin-and-zoom.spec.js
 ```
 
+## 🚀 Quick Start
+
+```bash
+git clone <your-repo-url>
+cd wheel-of-town
+npm install
+npm run dev
+```
+
+Then open `localhost:5173` in your browser and start spinning
+
 ## 📝 Development Status
 
-MVP complete. Core gameplay works.
-Recent improvements:
-- UI/UX overhaul: modern, lively, and classic design touches
-- Wheel graphics: classic palette, gold rim, pointer, and shadow
-- Solve action: modal with board-like input grid
-- Typography: Inter and Merriweather for a more natural, readable look
-- Confetti and animations for round/game win
-- Accessibility and keyboard navigation improved
-See `TASKS.md` for upcoming features and `PRD.md` for the full plan.
+MVP complete. Core gameplay works
+See `TASKS.md` for upcoming features and `PRD.md` for the full plan
 
 Working now: spinning, guessing, solving, AI opponents, basic accessibility
 Next up: sound effects, visual polish, bonus rounds
 
 ## 🤝 Contributing
 
-Got an idea? Found a bug? Come on in, the town’s always open.
+Got an idea? Found a bug? Come on in, the town’s always open
 
 ## 📄 License
 
-MIT. Build your own, remix ours, have fun.
+MIT. Build your own, remix ours, have fun
