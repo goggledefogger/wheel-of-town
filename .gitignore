@@ -48,6 +48,7 @@ coverage/
 test-results/
 playwright-report/
 playwright/.cache/
+tests/artifacts/
 
 # OS generated files
 .DS_Store

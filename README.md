@@ -1,5 +1,29 @@
 # 🎪 Wheel of Town
 
+*"Welcome to Wheel of Town! Pat Roy and Vanna Roy got the puzzles, the prizes, and the occasional bankruptcy. Let's spin!*
+
+---
+
+A browser-based word puzzle game where you face off against two opponents. Built with React and three.js, featuring a 3D wheel, letter board, and just enough chaos to keep things interesting.
+
+## 🎮 What's the Deal?
+
+Spin the wheel, guess letters, buy vowels, and solve the puzzle before an opponent beats you to it.
+The wheel might be kind, it might be cruel.
+
+**Highlights:**
+• 3D spinning wheel with satisfying physics and a classic, harmonious color palette
+• Modern, lively, and classic UI/UX with improved typography (Inter & Merriweather)
+• Solve action uses a modal with a board-style input grid, not a prompt
+• Confetti and celebratory effects for round/game win
+• Accessibility and keyboard navigation improved
+
+## 🧪 Testing
+
+Running tests with Playwright on macOS? If you encounter issues with Chromium, you can use WebKit as a reliable alternative:
+```bash
+npx playwright test --browser=webkit
+```
 *"Welcome to Wheel of Town! Pat Roy and Vanna Roy got the puzzles, the prizes, and the occasional bankruptcy. Let’s spin!*
 
 ---
