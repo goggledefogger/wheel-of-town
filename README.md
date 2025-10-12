@@ -1,10 +1,15 @@
 # 🎪 Wheel of Town
 
-*"Welcome to Wheel of Town! Pat Roy and Vanna Roy bring the puzzles, the prizes, and the occasional bankruptcy. Let's spin!*
+*"Welcome to Wheel of Town! Where Roys bring the puzzles, the prizes, and the occasional bankruptcy. Let's spin!*
 
 ---
 
 A browser-based word puzzle game where you face off against two opponents. Built with React and three.js, featuring a 3D wheel, letter board, and just enough chaos to keep things interesting.
+
+## Demo: https://wheel.roytown.net
+
+<img width="900" alt="image" src="https://github.com/user-attachments/assets/7d5faa6f-f29e-42bd-bf66-7874f6acdf69" />
+
 
 ## 🎮 What's the Deal?
 
